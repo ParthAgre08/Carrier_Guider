@@ -1,0 +1,1 @@
+ability_student =np.array((list((session.get("student_vector")).values()))).reshape(1,-1)
