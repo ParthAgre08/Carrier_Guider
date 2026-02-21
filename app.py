@@ -83,7 +83,6 @@ def main():
 @app.route("/assessment" , methods =["GET","POST"])
 def assessment():
    education = session.get("education")
-   
 
    if(request.method == "POST"):
       if(education == 'Grade 10'):
@@ -147,63 +146,200 @@ def assessment():
       
       
       elif(education == 'Grade 12 Science(PCM)'):
-         english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         english = int(request.form.get("english"))
+         mathematics = int(request.form.get("math"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
          
-         print(f"English :- {english} \nMathematics :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} ")
+         n_eng = n_math = n_phy = n_chem = 0
+         if(request.form.get("n_eng")):
+            n_eng = int(request.form.get("n_eng"))
+            english = (english*0.85) + (n_eng*0.15)
+
+         if(request.form.get("n_math")):
+            n_math = int(request.form.get("n_math"))
+            mathematics = (mathematics*0.85) + (n_math*0.15)
+         
+         if(request.form.get("n_phy")):
+            n_phy = int(request.form.get("n_phy"))
+            physics = (physics*0.85) + (n_phy*0.15)
+
+         if(request.form.get("n_chem")):  
+            n_chem = int(request.form.get("n_chem"))
+            chemistry = (chemistry*0.85) + (n_chem*0.15)
+
+         #storing the marks in session
+         session["English"] = english
+         session["Math"] = mathematics
+         session["physics"] = physics
+         session["chemistry"] = chemistry
+
+         session["student_vector"] = {
+            "Math": mathematics/100,
+            "Physics": physics/100,
+            "Chemistry": chemistry/100,
+            "English": english/100
+         }
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'English', {english})")
+         connector.commit()   
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Math', {mathematics})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Physics', {physics})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Chemistry', {chemistry})")
+         connector.commit()
+
+         
+         print(f"English :- {english} \nMathematics :- {mathematics} \n physics :- {physics} \n chemistry  :- {chemistry} ")
       
+
       elif(education == 'Grade 12 Science(PCB)'):
-         english = request.form["english"]
-         biology = request.form["biology"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         english = int(request.form.get("english"))
+         biology = int(request.form.get("biology"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
+
+         n_eng = n_bio = n_phy = n_chem = 0
+         if(request.form.get("n_eng")):  
+            n_eng = int(request.form.get("n_eng"))
+            english = (english*0.90) + (n_eng*0.10)
+
+         if(request.form.get("n_bio")):
+            n_bio = int(request.form.get("n_bio"))
+            biology = (biology*0.90) + (n_bio*0.10)
          
+         if(request.form.get("n_phy")):
+            n_phy = int(request.form.get("n_phy"))
+            physics = (physics*0.90) + (n_phy*0.10)
+
+         if(request.form.get("n_chem")):
+            n_chem = int(request.form.get("n_chem"))
+            chemistry = (chemistry*0.90) + (n_chem*0.10)
+
+         #storing the marks in session
+         session["English"] = english
+         session["Biology"] = biology 
+         session["physics"] = physics
+         session["chemistry"] = chemistry
+
+         session["student_vector"] = {
+            "Biology": biology/100,
+            "Physics": physics/100,
+            "Chemistry": chemistry/100,
+            "English": english/100
+         }
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'English', {english})")
+         connector.commit()   
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Biology', {biology})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Physics', {physics})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Chemistry', {chemistry})")
+         connector.commit()
+
+
          print(f"English :- {english} \nBiology :- {biology} \nPhysics :- {physics} \nChemistry :- {chemistry} ")
       
       elif(education == 'Grade 12 Science(PCMB)'):
-         english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
-         biology = request.form["biology"]
+         english = int(request.form.get("english"))
+         mathematics = int(request.form.get("math"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
+         biology = int(request.form.get("biology"))
+
+         n_eng = n_math = n_phy = n_chem = n_bio = 0
+         if(request.form.get("n_eng")):
+            n_eng = int(request.form.get("n_eng"))
+            english = (english*0.85) + (n_eng*0.15)
+
+         if(request.form.get("n_math")):
+            n_math = int(request.form.get("n_math"))
+            mathematics = (mathematics*0.85) + (n_math*0.15)
+
+         if(request.form.get("n_phy")):
+            n_phy = int(request.form.get("n_phy"))
+            physics = (physics*0.85) + (n_phy*0.15)
          
+         if(request.form.get("n_chem")):
+            n_chem = int(request.form.get("n_chem"))
+            chemistry = (chemistry*0.85) + (n_chem*0.15)
+
+         if(request.form.get("n_bio")):
+            n_bio = int(request.form.get("n_bio"))
+            biology = (biology*0.85) + (n_bio*0.15)
+
+         #storing the marks in session
+         session["English"] = english
+         session["Math"] = mathematics
+         session["physics"] = physics
+         session["chemistry"] = chemistry
+         session["Biology"] = biology
+         session["student_vector"] = {
+            "Math": mathematics/100,
+            "Physics": physics/100,
+            "Chemistry": chemistry/100,
+            "Biology": biology/100,
+            "English": english/100
+         }
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'English', {english})")
+         connector.commit()
+         
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Mathematics', {mathematics})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Physics', {physics})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Chemistry', {chemistry})")
+         connector.commit()
+
+         cur.execute(f"INSERT INTO student_marks (email,education,subject,marks) VALUES ('{session['email']}', '{education}', 'Biology', {biology})")
+         connector.commit()
+
          print(f"English :- {english} \nMath :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} \nBiology :- {biology}")
       
       elif(education == 'Grade 12 Commerce'):
          english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         mathematics = int(request.form.get("mathematics"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
          
          print(f"English :- {english} \nMath :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} ")
       
       elif(education == 'Grade 12 Arts'):
-         english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         english = int(request.form.get("english"))
+         mathematics = int(request.form.get("mathematics"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
          
          print(f"English :- {english} \nMath :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} ")
       
       elif(education == 'Diploma/Polytechnic'):
-         english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         english = int(request.form.get("english"))
+         mathematics = int(request.form.get("mathematics"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
          
          print(f"English :- {english} \nMath :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} ")
       
       elif(education == 'UG'):
-         english = request.form["english"]
-         mathematics = request.form["mathematics"]
-         physics = request.form["physics"]
-         chemistry = request.form["chemistry"]
+         english = int(request.form.get("english"))
+         mathematics = int(request.form.get("mathematics"))
+         physics = int(request.form.get("physics"))
+         chemistry = int(request.form.get("chemistry"))
          
          print(f"English :- {english} \nMath :- {mathematics} \nScience :- {physics} \nSocial Science :- {chemistry} ")
          
-      return render_template("personality_assessment.html",Education = education,english=english,math=math,science=science,socialscience=socialscience,secondlanguage=secondlanguage,n_eng=n_eng,n_math=n_math,n_sci=n_sci,n_social=n_social,n_second=n_second)
+      # return render_template("personality_assessment.html",Education = education,english=english,math=mathematics,science=science,socialscience=socialscience,secondlanguage=secondlanguage,n_eng=n_eng,n_math=n_math,n_sci=n_sci,n_social=n_social,n_second=n_second)
+      return render_template("personality_assessment.html")
 
    else:
       if(education == 'Grade 10'):
@@ -311,9 +447,29 @@ def intrest_assesment():
       
       
       elif(session["education"] == 'Grade 12 Science(PCM)'): 
+         
          return render_template("generate_career_profile.html")
+      
+
       elif(session["education"] == 'Grade 12 Science(PCB)'):
-         return render_template("generate_career_profile.html")
+         medical = int(request.form.get("interest_medical"))
+         research = int(request.form.get("interest_research"))
+         pharma = int(request.form.get("interest_pharma"))
+         allied = int(request.form.get("interest_allied"))
+         psychology = int(request.form.get("interest_psychology"))
+         environment = int(request.form.get("interest_environment"))
+
+         session["intrest_vector"] = {
+            "Medical": medical/5,
+            "Research": research/5,
+            "Pharma": pharma/5,
+            "Allied": allied/5,
+            "Psychology": psychology/5,
+            "Environment": environment/5
+         }
+
+         return redirect(url_for("generate_career_profile"))
+         
       elif(session["education"] == 'Grade 12 Science(PCMB)'):
          return render_template("generate_career_profile.html")   
       elif(session["education"] == 'Grade 12 Commerce'): 
