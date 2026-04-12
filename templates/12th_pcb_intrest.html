@@ -13,6 +13,127 @@ function updateValue(slider, outputId) {
 }
 </script>
 
+
+<style>
+
+/* ===== Background Override ===== */
+body {
+    background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 50%, #e6f0ff 100%) !important;
+}
+
+/* ===== Main Card ===== */
+body > div {
+    background: #ffffff !important;
+    border-radius: 28px !important;
+    border: 1px solid rgba(0, 90, 255, 0.2);
+    box-shadow:
+        0 25px 70px rgba(0, 60, 255, 0.12),
+        0 0 35px rgba(0, 90, 255, 0.08);
+    transition: 0.3s ease;
+    animation: fadeUp 0.8s ease-in-out;
+}
+
+body > div:hover {
+    box-shadow:
+        0 30px 80px rgba(0, 60, 255, 0.18),
+        0 0 45px rgba(0, 90, 255, 0.15);
+}
+
+/* ===== Main Heading ===== */
+h1 {
+    background: linear-gradient(90deg, #0033cc, #1a75ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700 !important;
+}
+
+/* ===== Section Heading ===== */
+h2 {
+    color: #1a2a6c !important;
+    border-color: rgba(0, 90, 255, 0.2) !important;
+}
+
+/* ===== Description Text ===== */
+p {
+    color: #4a5c9a !important;
+}
+
+/* ===== Labels ===== */
+label {
+    color: #1a2a6c !important;
+}
+
+/* ===== Slider Track ===== */
+input[type="range"] {
+    -webkit-appearance: none;
+    height: 8px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #0033cc, #1a75ff);
+    outline: none;
+}
+
+/* ===== Slider Thumb ===== */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #1a4dff;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 15px rgba(0, 85, 255, 0.6);
+    transform: scale(1.1);
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #1a4dff;
+    cursor: pointer;
+}
+
+/* ===== Slider Value Numbers ===== */
+span {
+    color: #1a4dff !important;
+    font-size: 18px;
+}
+
+/* ===== Submit Button ===== */
+button[type="submit"] {
+    background: linear-gradient(90deg, #0033cc, #1a75ff) !important;
+    border-radius: 30px !important;
+    padding: 14px 40px !important;
+    font-weight: 700 !important;
+    transition: 0.3s ease !important;
+}
+
+button[type="submit"]:hover {
+    box-shadow: 0 0 25px rgba(0, 85, 255, 0.6) !important;
+    transform: translateY(-3px);
+}
+
+/* ===== Animation ===== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+</style>
+
 </head>
 
 <body class="bg-gradient-to-br from-green-600 to-teal-700 min-h-screen flex justify-center items-center p-6">

@@ -4,6 +4,7 @@ import requests
 import pymysql
 from datetime import datetime
 from stream_profiles import STREAM_PROFILES
+from degree_profiles import COMMERCE_DEGREE_PROFILES, PCB_DEGREE_PROFILES, PCM_DEGREE_PROFILES
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
@@ -143,49 +144,176 @@ def intrest_assesment():
         math_interest = int(data.get("interest_math", 0))
         science_interest = int(data.get("interest_science", 0))  
         buisness_interest = int(data.get("interest_business", 0)) 
-        creativity_interest = int(data.get("interest_creative", 0))
+        creativity_internest = int(data.get("interest_creative", 0))
         social_interest = int(data.get("interest_social", 0))
 
         session["intrest_vector"] = {
             "Math": math_interest/5, "Science": science_interest/5, "Business": buisness_interest/5,
-            "Creativity": creativity_interest/5, "Social": social_interest/5
+            "Creativity": creativity_internest/5, "Social": social_interest/5
         }
     return jsonify({"success": True, "message": "Interest assessment recorded"})
 
 
 @app.route("/generate_career_profile", methods=["GET"])
 def generate_career_profile():
-    academic_dict = session.get("student_vector")
-    if not academic_dict:
-        return jsonify({"success": False, "error": "Missing assessment data"}), 400
-        
-    ability_student = np.array([academic_dict["Math"], academic_dict["Science"], academic_dict["Social"], academic_dict["Language"]]).reshape(1, -1)
-    
-    riasec_dict = session.get("riasec_vector")
-    riasec_student = np.array([riasec_dict["R"], riasec_dict["I"], riasec_dict["A"], riasec_dict["S"], riasec_dict["E"], riasec_dict["C"]]).reshape(1, -1)
+    education = session.get("education")
+    if not education:
+        return jsonify({"success": False, "error": "No education set in session"}), 400
 
-    interest_dict = session.get("intrest_vector")
-    intrest_student = np.array([interest_dict["Math"], interest_dict["Science"], interest_dict["Business"], interest_dict["Creativity"], interest_dict["Social"]]).reshape(1, -1)
+    # Grade 10 (stream-level profiles)
+    if education == 'Grade 10':
+        academic_dict = session.get("student_vector")
+        riasec_dict = session.get("riasec_vector")
+        interest_dict = session.get("intrest_vector")
 
-    scores = {}
-    for stream , profile in STREAM_PROFILES.items():
-        stream_ability = np.array(profile["academic"]).reshape(1,-1)
-        stream_personality = np.array(profile["personality"]).reshape(1,-1)
-        stream_intrest = np.array(profile["interest"]).reshape(1,-1)
+        if not academic_dict or not riasec_dict or not interest_dict:
+            return jsonify({"success": False, "error": "Missing assessment data"}), 400
 
-        stream_academic_similarity = cosine_similarity(ability_student,stream_ability)[0][0]
-        stream_personality_similarity = cosine_similarity(riasec_student,stream_personality)[0][0]
-        stream_interest_similarity = cosine_similarity(intrest_student,stream_intrest)[0][0]
+        ability_student = np.array([academic_dict["Math"], academic_dict["Science"], academic_dict["Social"], academic_dict["Language"]]).reshape(1, -1)
+        riasec_student = np.array([riasec_dict["R"], riasec_dict["I"], riasec_dict["A"], riasec_dict["S"], riasec_dict["E"], riasec_dict["C"]]).reshape(1, -1)
+        intrest_student = np.array([interest_dict["Math"], interest_dict["Science"], interest_dict["Business"], interest_dict["Creativity"], interest_dict["Social"]]).reshape(1, -1)
 
-        scores[stream] = float((stream_academic_similarity*0.5) + (stream_personality_similarity*0.3) + (stream_interest_similarity*0.2))
-        
-    best_stream = max(scores, key=scores.get)
-    confidence_level = f"{round(scores[best_stream]*100,2)}%"
-    session["best_stream"] = best_stream
-    session["confidence_level"] = confidence_level
-    session["scores"] = scores
+        scores = {}
+        for stream , profile in STREAM_PROFILES.items():
+            stream_ability = np.array(profile["academic"]).reshape(1,-1)
+            stream_personality = np.array(profile["personality"]).reshape(1,-1)
+            stream_intrest = np.array(profile["interest"]).reshape(1,-1)
 
-    return jsonify({"success": True, "best_stream": best_stream, "scores": scores, "confidence_level": confidence_level})
+            stream_academic_similarity = cosine_similarity(ability_student,stream_ability)[0][0]
+            stream_personality_similarity = cosine_similarity(riasec_student,stream_personality)[0][0]
+            stream_interest_similarity = cosine_similarity(intrest_student,stream_intrest)[0][0]
+
+            scores[stream] = float((stream_academic_similarity*0.5) + (stream_personality_similarity*0.3) + (stream_interest_similarity*0.2))
+
+        best_stream = max(scores, key=scores.get)
+        confidence_level = f"{round(scores[best_stream]*100,2)}%"
+        session["best_stream"] = best_stream
+        session["confidence_level"] = confidence_level
+        session["scores"] = scores
+
+        return jsonify({"success": True, "best_stream": best_stream, "scores": scores, "confidence_level": confidence_level})
+
+    # Grade 12 Science (PCM) - degree branch matching
+    elif education == 'Grade 12 Science(PCM)':
+        academic_dict = session.get("student_vector")
+        riasec_dict = session.get("riasec_vector")
+        interest_dict = session.get("intrest_vector")
+
+        if not academic_dict or not riasec_dict or not interest_dict:
+            return jsonify({"success": False, "error": "Missing assessment data for PCM"}), 400
+
+        ability_student = np.array([academic_dict.get("Math",0), academic_dict.get("Physics",0), academic_dict.get("Chemistry",0)]).reshape(1, -1)
+        riasec_student = np.array([riasec_dict["R"], riasec_dict["I"], riasec_dict["A"], riasec_dict["S"], riasec_dict["E"], riasec_dict["C"]]).reshape(1, -1)
+        intrest_student = np.array([interest_dict.get(k,0) for k in interest_dict.keys()]).reshape(1, -1)
+
+        scores = {}
+        for branch, profile in PCM_DEGREE_PROFILES.items():
+            stream_ability = np.array(profile["academic"]).reshape(1,-1)
+            stream_personality = np.array(profile["personality"]).reshape(1,-1)
+            stream_intrest = np.array(profile["interest"]).reshape(1,-1)
+
+            stream_academic_similarity = cosine_similarity(ability_student,stream_ability)[0][0]
+            stream_personality_similarity = cosine_similarity(riasec_student,stream_personality)[0][0]
+            # try to compute interest similarity if dimensions match
+            try:
+                stream_interest_similarity = cosine_similarity(intrest_student,stream_intrest)[0][0]
+            except Exception:
+                stream_interest_similarity = 0.0
+
+            scores[branch] = float((stream_academic_similarity*0.5) + (stream_personality_similarity*0.3) + (stream_interest_similarity*0.2))
+
+        best_branch = max(scores, key=scores.get)
+        confidence_level = f"{round(scores[best_branch]*100,2)}%"
+        session["best_stream"] = best_branch
+        session["confidence_level"] = confidence_level
+        session["scores"] = scores
+
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        top_2 = sorted_scores[:2]
+
+        return jsonify({"success": True, "best_branch": best_branch, "scores": scores, "confidence_level": confidence_level, "top_2": top_2})
+
+    # Grade 12 Science (PCB)
+    elif education == 'Grade 12 Science(PCB)':
+        academic_dict = session.get("student_vector")
+        riasec_dict = session.get("riasec_vector")
+        interest_dict = session.get("intrest_vector")
+
+        if not academic_dict or not riasec_dict or not interest_dict:
+            return jsonify({"success": False, "error": "Missing assessment data for PCB"}), 400
+
+        ability_student = np.array([academic_dict.get("Biology",0), academic_dict.get("Physics",0), academic_dict.get("Chemistry",0)]).reshape(1, -1)
+        riasec_student = np.array([riasec_dict["R"], riasec_dict["I"], riasec_dict["A"], riasec_dict["S"], riasec_dict["E"], riasec_dict["C"]]).reshape(1, -1)
+        intrest_student = np.array([interest_dict.get(k,0) for k in interest_dict.keys()]).reshape(1, -1)
+
+        scores = {}
+        for branch, profile in PCB_DEGREE_PROFILES.items():
+            stream_ability = np.array(profile["academic"]).reshape(1,-1)
+            stream_personality = np.array(profile["personality"]).reshape(1,-1)
+            stream_intrest = np.array(profile["interest"]).reshape(1,-1)
+
+            stream_academic_similarity = cosine_similarity(ability_student,stream_ability)[0][0]
+            stream_personality_similarity = cosine_similarity(riasec_student,stream_personality)[0][0]
+            try:
+                stream_interest_similarity = cosine_similarity(intrest_student,stream_intrest)[0][0]
+            except Exception:
+                stream_interest_similarity = 0.0
+
+            scores[branch] = float((stream_academic_similarity*0.5) + (stream_personality_similarity*0.3) + (stream_interest_similarity*0.2))
+
+        best_branch = max(scores, key=scores.get)
+        confidence_level = f"{round(scores[best_branch]*100,2)}%"
+        session["best_stream"] = best_branch
+        session["confidence_level"] = confidence_level
+        session["scores"] = scores
+
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        top_2 = sorted_scores[:2]
+
+        return jsonify({"success": True, "best_branch": best_branch, "scores": scores, "confidence_level": confidence_level, "top_2": top_2})
+
+    # Grade 12 Commerce
+    elif education == 'Grade 12 Commerce':
+        academic_dict = session.get("student_vector")
+        riasec_dict = session.get("riasec_vector")
+        interest_dict = session.get("intrest_vector")
+
+        if not academic_dict or not riasec_dict or not interest_dict:
+            return jsonify({"success": False, "error": "Missing assessment data for Commerce"}), 400
+
+        ability_student = np.array([academic_dict.get("Accounts",0), academic_dict.get("Economics",0), academic_dict.get("Business",0)]).reshape(1,-1)
+        riasec_student = np.array([riasec_dict["R"], riasec_dict["I"], riasec_dict["A"], riasec_dict["S"], riasec_dict["E"], riasec_dict["C"]]).reshape(1,-1)
+        intrest_student = np.array([interest_dict.get(k,0) for k in interest_dict.keys()]).reshape(1, -1)
+
+        scores = {}
+        for branch, profile in COMMERCE_DEGREE_PROFILES.items():
+            stream_ability = np.array(profile["academic"]).reshape(1,-1)
+            stream_personality = np.array(profile["personality"]).reshape(1,-1)
+            stream_intrest = np.array(profile["interest"]).reshape(1,-1)
+
+            stream_academic_similarity = cosine_similarity(ability_student,stream_ability)[0][0]
+            stream_personality_similarity = cosine_similarity(riasec_student,stream_personality)[0][0]
+            try:
+                stream_interest_similarity = cosine_similarity(intrest_student,stream_intrest)[0][0]
+            except Exception:
+                stream_interest_similarity = 0.0
+
+            scores[branch] = float((stream_academic_similarity*0.5) + (stream_personality_similarity*0.3) + (stream_interest_similarity*0.2))
+
+        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        top_2 = sorted_scores[:2]
+
+        best_branch = sorted_scores[0][0]
+        confidence_level = f"{round(sorted_scores[0][1]*100,2)}%"
+
+        session["best_stream"] = best_branch
+        session["confidence_level"] = confidence_level
+        session["scores"] = scores
+
+        return jsonify({"success": True, "best_branch": best_branch, "scores": scores, "confidence_level": confidence_level, "top_2": top_2})
+
+    else:
+        return jsonify({"success": False, "error": "Education type not supported by career generation"}), 400
 
 
 def inference(prompt):

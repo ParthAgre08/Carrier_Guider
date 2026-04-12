@@ -6,11 +6,7 @@ from stream_profiles import STREAM_PROFILES
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from degree_profiles import COMMERCE_DEGREE_PROFILES, PCB_DEGREE_PROFILES, PCM_DEGREE_PROFILES
-import markdown
-from groq import Groq
 
-# Groq API client initialization (using Groq cloud API for faster responses)
-groq_client = Groq(api_key="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")  # <-- Replace with your actual Groq API key
 
 app = Flask(__name__)# __name__ = It tells the Flask application that this file’s location is the main folder where static, templates, and other files are located.
 
@@ -29,7 +25,7 @@ cur = connector.cursor()
 #We then use the route() deco    rator to tell Flask what URL should trigger our function.
 @app.route("/")
 def starting():
-    return render_template("landing.html")
+    return render_template("register.html")
 
 @app.route("/login",methods=["GET","POST"])
 def already_register():
@@ -44,7 +40,7 @@ def already_register():
           session["user"] = user[1]
           session["email"] = email
           session["education"] = user[4]
-          return redirect(url_for("dashboard"))
+          return render_template("main.html", name=user[1], greeting="Welcome back")
        else:
           return render_template("login.html",error = "Incorrect Password")
 
@@ -76,59 +72,13 @@ def register():
       session["user"] = name
       session["email"] = email
       session["education"] = education
-      return redirect(url_for("dashboard"))
+      return render_template("main.html",name=name,greeting="Welcome to Carrier Guider")
    return render_template("register.html")
     
 
 @app.route("/main",methods=["GET","POST"])
 def main():
-   return redirect(url_for("dashboard"))
-
-@app.route("/dashboard")
-def dashboard():
-    if "email" not in session:
-        return redirect(url_for("already_register"))
-    
-    email = session["email"]
-    education = session["education"]
-
-    # Try to load existing data if session is empty (e.g. after browser restart)
-    if "student_vector" not in session:
-        cur.execute("SELECT subject, marks FROM student_marks WHERE email=%s AND education=%s", (email, education))
-        marks = cur.fetchall()
-        if marks:
-            # Reconstruct student_vector based on education level
-            # This is a simplified reconstruction, ideally we'd store the full vector
-            m_dict = {m[0]: m[1] for m in marks}
-            if education == 'Grade 10':
-                session["student_vector"] = {
-                    "Math": m_dict.get("Math", 0)/100,
-                    "Science": m_dict.get("Science", 0)/100,
-                    "Social": m_dict.get("Social Science", 0)/100,
-                    "Language": m_dict.get("Language", 0)/100
-                }
-            elif education == 'Grade 12 Science(PCM)':
-                 session["student_vector"] = {
-                    "Math": m_dict.get("Math", 0)/100,
-                    "Physics": m_dict.get("Physics", 0)/100,
-                    "Chemistry": m_dict.get("Chemistry", 0)/100,
-                    "English": m_dict.get("English", 0)/100
-                }
-            # ... and so on for other streams if needed
-
-    if "riasec_vector" not in session:
-        cur.execute("SELECT R, I, A, S, E, C FROM riasec_vector WHERE email=%s", (email,))
-        r_vec = cur.fetchone()
-        if r_vec:
-            session["riasec_vector"] = {
-                "R": r_vec[0], "I": r_vec[1], "A": r_vec[2],
-                "S": r_vec[3], "E": r_vec[4], "C": r_vec[5]
-            }
-
-    # If we have all vectors but no best_stream, trigger generation logi8c or just show "Incomplete"
-    # For now, the dashboard template handles the "If session.get('best_stream')" case.
-
-    return render_template("dashboard.html")
+   return render_template("main.html")
  
 
 @app.route("/assessment" , methods =["GET","POST"])
@@ -977,31 +927,16 @@ def generate_career_profile():
            
        
 
-# ===================== LOCAL LLM (Ollama) - COMMENTED OUT =====================
-# def inference(prompt):
-#     print("Thinking ......")
-#     r = requests.post("http://localhost:11434/api/generate",json={
-#             "model":"llama3.2",
-#             "prompt":prompt,
-#             "stream":False
-#
-#         })
-#     response = r.json()
-#     return response
-# ==============================================================================
-
-# ===================== GROQ API (Fast Cloud LLM) =====================
 def inference(prompt):
-    print("Thinking ...... (using Groq API)")
-    response = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-    # Return in same format as old function so rest of code works
-    return {"response": response.choices[0].message.content}
-# =====================================================================
+    print("Thinking ......")
+    r = requests.post("http://localhost:11434/api/generate",json={
+            "model":"llama3.2",
+            "prompt":prompt,
+            "stream":False
+
+        })
+    response = r.json()
+    return response
 
 @app.route("/career_roadmap")
 def career_roadmap():
@@ -1049,24 +984,17 @@ def career_roadmap():
         6. Keep tone encouraging and practical.
         7. Do not contradict the predicted stream.
         8. Format response in clear sections with headings. 
-        so that i can show in the web page in a structured format. every point should be in different section with heading.
-        9. do not generate response when the user ask the querey apart from the carrer related querey. if the user ask the querey apart from the carrer related querey then you just say that i am not designed to answer this querey because it is not related to career. 
-        '''
+        so that i can show in the web page in a structured format. every point should be in different section with heading.'''
         
         with open("career_roadmap_prompt.md","w") as f:
             f.write(prompt)
 
         response = inference(prompt)["response"]
-        roadmap_html = markdown.markdown(
-        response,
-        extensions=["fenced_code", "tables"]
-        )
-        with open("response.md","w") as f:
+
+        
+        with open("response.txt","w") as f:
             f.write(response)
-        return render_template(
-        "career_roadmap.html",
-        roadmap=roadmap_html
-        )
+        return render_template("career_roadmap.html",response=response)
 
     elif session["education"] == "Grade 12 Science(PCM)":
 
@@ -1107,16 +1035,11 @@ def career_roadmap():
             f.write(prompt)
 
         response = inference(prompt)["response"]
-        roadmap_html = markdown.markdown(
-        response,
-        extensions=["fenced_code", "tables"]
-        )
+
+        
         with open("response.md","w") as f:
             f.write(response)
-        return render_template(
-        "career_roadmap.html",
-        roadmap=roadmap_html
-        )
+        return render_template("career_roadmap.html",response=response)
     
     
     elif session["education"] == "Grade 12 Science(PCB)":
@@ -1162,7 +1085,7 @@ def career_roadmap():
         Research: {session.get("intrest_vector")["Research"]}
         Pharma: {session.get("intrest_vector")["Pharma"]}
         Allied: {session.get("intrest_vector")["Allied"]}
-        Psychology: {session.get("intrest_vector")["psychology"]}
+        Psychology: {session.get("intrest_vector")["Psychology"]}
         Environment: {session.get("intrest_vector")["Environment"]}
 
         --------------------------------------------------
@@ -1199,18 +1122,11 @@ def career_roadmap():
             f.write(prompt)
 
         response = inference(prompt)["response"]
-        roadmap_html = markdown.markdown(
-        response,
-        extensions=["fenced_code", "tables"]
-        )
-        with open("response.md","w") as f:
-            f.write(response)
-        return render_template(
-        "career_roadmap.html",
-        roadmap=roadmap_html
-        )
 
         
+        with open("response.md","w") as f:
+            f.write(response)
+        return render_template("career_roadmap.html",response=response)
     
 
     elif session["education"] == "Grade 12 Commerce":
@@ -1280,17 +1196,9 @@ def career_roadmap():
             f.write(prompt)
 
         response = inference(prompt)["response"]
-
-        roadmap_html = markdown.markdown(
-        response,
-        extensions=["fenced_code", "tables"]
-        )
         with open("response.md","w") as f:
             f.write(response)
-        return render_template(
-        "career_roadmap.html",
-        roadmap=roadmap_html
-        )
+        return render_template("career_roadmap.html",response=response)
 
 
 @app.route("/Idont_agree")
@@ -1327,25 +1235,10 @@ Keep it structured with headings.
 """
 
    response = inference(prompt)["response"]
-   roadmap_html = markdown.markdown(
-   response,
-   extensions=["fenced_code", "tables"])
-   with open("response.md","w") as f:   
-        f.write(response)
-   return render_template(
-    "career_roadmap.html",
-    roadmap=roadmap_html
-    )
+   with open("user_recomendation.md", "w") as f:
+      f.write(response)
+   return render_template("career_roadmap.html", response=response)
 
-@app.route("/explore")
-def explore():
-    return render_template("blank.html")
-
-@app.route("/show")
-def show():
-    return render_template("show.html")
-
-    
 @app.route("/logout")
 def logout():
     session.clear()
