@@ -4,22 +4,22 @@
         You must explain the recommended DEGREE BRANCH.
         Do NOT change the predicted branch.
 
-        Best Recommended Career Branch: UI/UX & Design Technology
-        Confidence Level: 95.53%
+        Best Recommended Career Branch: Computer Science Engineering
+        Confidence Level: 98.01%
 
         top 2 Branch Scores:
-        [('UI/UX & Design Technology', 0.9553095465123409), ('Game Development', 0.9448927259175701)]
+        [('Computer Science Engineering', 0.9800583136970891), ('Game Development', 0.9686247395952459)]
 
         Academic Strength (0-1):
         Math: 0.88
-        Physics: 0.9
-        Chemistry: 0.67
+        Physics: 0.89
+        Chemistry: 0.77
 
         RIASEC Personality:
-        {'A': 0.6, 'C': 0.52, 'E': 0.64, 'I': 0.44, 'R': 0.68, 'S': 0.76}
+        {'A': 0.6, 'C': 0.76, 'E': 0.52, 'I': 0.8, 'R': 0.64, 'S': 0.76}
 
         Interest Vector:
-        {'Computer_AI': 0.96, 'Core_Engineering': 0.2, 'Creative_Tech': 0.96, 'Defense_Tech': 0.19999999999999998, 'Entrepreneurship': 0.76, 'Pure_Science': 0.27999999999999997}
+        {'Computer_AI': 0.5199999999999999, 'Core_Engineering': 0.24, 'Creative_Tech': 0.43999999999999995, 'Defense_Tech': 0.21999999999999997, 'Entrepreneurship': 0.32, 'Pure_Science': 0.38}
 
         Instructions:
         1. Explain why this branch suits the student.
