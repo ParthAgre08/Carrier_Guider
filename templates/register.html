@@ -1,198 +1,108 @@
-  <!DOCTYPE html>
-  <html lang="en">
-
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-  </head>
+    <title>Create Account | Career Guider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
+                        radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.1), transparent);
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 hero-gradient min-h-screen font-sans flex items-center justify-center p-4">
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <div class="max-w-md w-full py-8">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2 mb-4">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg overflow-hidden shrink-0">
+                    <i class="fas fa-compass fa-lg"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-gradient">Career Guider</span>
+            </a>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Create Account</h2>
+            <p class="text-slate-600">Start defining your future today</p>
+        </div>
 
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-  }
+        <!-- Card -->
+        <div class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 border border-slate-100 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/10">
+            <form action="/register" method="post" class="space-y-5">
+                {% if error %}
+                <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-medium border border-red-100">
+                    {{ error }}
+                </div>
+                {% endif %}
 
-  body {
-    height: 100vh;
-    background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 50%, #e6f0ff 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+                <div class="space-y-2">
+                    <label for="exampleInputName1" class="text-sm font-semibold text-slate-700 block">Full Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-slate-400"></i>
+                        </div>
+                        <input type="text" id="exampleInputName1" name="name" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors" placeholder="John Doe" required>
+                    </div>
+                </div>
 
-  form {
-    background: #ffffff;
-    padding: 45px 40px;
-    width: 420px;
-    border-radius: 22px;
-    border: 1px solid rgba(0, 90, 255, 0.2);
-    box-shadow:
-      0 15px 45px rgba(0, 60, 255, 0.12),
-      0 0 25px rgba(0, 90, 255, 0.08);
-    transition: 0.3s ease;
-  }
+                <div class="space-y-2">
+                    <label for="exampleInputEmail1" class="text-sm font-semibold text-slate-700 block">Email Address</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-slate-400"></i>
+                        </div>
+                        <input type="email" id="exampleInputEmail1" name="email" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors" placeholder="name@example.com" required>
+                    </div>
+                </div>
 
-  form:hover {
-    box-shadow:
-      0 20px 55px rgba(0, 60, 255, 0.18),
-      0 0 35px rgba(0, 90, 255, 0.15);
-  }
+                <div class="space-y-2">
+                    <label for="exampleInputPassword1" class="text-sm font-semibold text-slate-700 block">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-slate-400"></i>
+                        </div>
+                        <input type="password" id="exampleInputPassword1" name="password" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors" placeholder="••••••••" required>
+                    </div>
+                </div>
 
-  h1 {
-    text-align: center;
-    font-size: 40px !important;
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+                <div class="space-y-2">
+                    <label for="exampleFormControlSelect1" class="text-sm font-semibold text-slate-700 block">Current Education Level</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-graduation-cap text-slate-400"></i>
+                        </div>
+                        <select id="exampleFormControlSelect1" name="education" class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors appearance-none" required>
+                            <option value="" disabled selected>Select your level</option>
+                            <option>Grade 10</option>
+                            <option>Grade 12 Science(PCM)</option>
+                            <option>Grade 12 Science(PCB)</option>
+                            <option>Grade 12 Commerce</option>
+                            <option>Grade 12 Arts</option>
+                            <option>UG</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <i class="fas fa-chevron-down text-slate-400 text-sm"></i>
+                        </div>
+                    </div>
+                </div>
 
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: 600;
-    color: #0d1b4c;
-  }
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-all hover:shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group mt-2">
+                    Create Account <i class="fas fa-user-plus group-hover:scale-110 transition-transform"></i>
+                </button>
+            </form>
 
-  .form-group {
-    margin-bottom: 18px;
-  }
+            <div class="mt-6 text-center text-sm text-slate-600">
+                Already have an account? <a href="/login" class="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition-colors">Sign in</a>
+            </div>
+        </div>
+    </div>
 
-  label {
-    font-size: 14px;
-    font-weight: 500;
-    display: block;
-    margin-bottom: 6px;
-    color: #1a2a6c;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid #cce0ff;
-    outline: none;
-    font-size: 14px;
-    background-color: #f9fbff;
-    transition: 0.3s ease;
-  }
-
-  input:hover,
-  select:hover {
-    border-color: #1a75ff;
-  }
-
-  input:focus,
-  select:focus {
-    background-color: #ffffff;
-    border-color: #1a4dff;
-    box-shadow: 0 0 12px rgba(0, 85, 255, 0.4);
-  }
-
-  small {
-    font-size: 12px;
-    color: #5a6ea8;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 13px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    color: white;
-    font-weight: 600;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s ease;
-  }
-
-  .btn:hover {
-    background: linear-gradient(90deg, #001f99, #0052ff);
-    box-shadow: 0 0 20px rgba(0, 90, 255, 0.6);
-    transform: translateY(-3px);
-  }
-
-  a {
-    text-decoration: none;
-    color: #1a4dff;
-    font-weight: 500;
-    font-size: 14px;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  p {
-    text-align: center;
-    font-size: 14px;
-    margin: 8px 0;
-  }
-
-  @media (max-width: 480px) {
-    form {
-      width: 92%;
-      padding: 35px 25px;
-    }
-
-    h1 {
-      font-size: 30px !important;
-    }
-  }
-</style>
-
-  <body>
-
-    <form action="/register" method="post">
-      
-      <div class="form-group">
-        <h1 style="text-align:center; color: aqua; font-size: 50px;">मार्गदिशा</h1>
-        <h2 style="text-align:center; margin-bottom: 10px;">Create Account </h2>
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email"
-          required>
-          {% if error %}
-      <p style="color:red;">{{ error }}</p>
-      {% endif %}
-        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1 " name="password" required>
-      </div>
-      <label for="exampleInputName1">Name</label>
-      <input type="text" class="form-control" id="exampleInputName1" name="name" required>
-      <div>
-
-      </div>
-      <div class="form-group">
-        <label for="exampleFormControlSelect1">Current Pursuing/Completed Education</label>
-        <select class="form-control" id="exampleFormControlSelect1" name="education" required>
-          <option></option>
-          <option>Grade 10</option>
-          <option>Grade 12 Science(PCM)</option>
-          <option>Grade 12 Science(PCB)</option>
-          <!-- <option>Grade 12 Science(PCMB)</option> -->
-          <option>Grade 12 Commerce</option>
-          <option>Grade 12 Arts</option>
-          <!-- <option>Diploma/Polytechnic</option>   -->
-          <option>UG</option>
-        </select>
-      </div>
-
-      <div>
-        <a href="/login">Already Registered?</a>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </body>
-
-  </html>
+</body>
+</html>

@@ -1,156 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-<style>
-    /* ===== Reset ===== */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-        height: 100vh;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f6ff 50%, #e6f0ff 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* ===== Form Card ===== */
-    form {
-        background: #ffffff;
-        padding: 45px 40px;
-        width: 400px;
-        border-radius: 18px;
-        box-shadow: 
-            0 10px 40px rgba(0, 60, 255, 0.15),
-            0 0 25px rgba(0, 90, 255, 0.1);
-        border: 1px solid rgba(0, 80, 255, 0.2);
-        transition: 0.3s ease-in-out;
-    }
-
-    form:hover {
-        box-shadow: 
-            0 15px 50px rgba(0, 60, 255, 0.2),
-            0 0 35px rgba(0, 90, 255, 0.15);
-    }
-
-    /* ===== Heading ===== */
-    h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 24px;
-        font-weight: 700;
-        background: linear-gradient(90deg, #0033cc, #1a75ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* ===== Form Group ===== */
-    .form-group {
-        margin-bottom: 22px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #0d1b4c;
-        margin-bottom: 8px;
-    }
-
-    /* ===== Input Fields ===== */
-    .form-control {
-        padding: 13px 14px;
-        border-radius: 10px;
-        border: 1px solid #cce0ff;
-        outline: none;
-        font-size: 14px;
-        background-color: #f9fbff;
-        transition: all 0.3s ease;
-    }
-
-    .form-control:hover {
-        border-color: #1a75ff;
-    }
-
-    .form-control:focus {
-        border-color: #1a4dff;
-        background-color: #ffffff;
-        box-shadow: 0 0 12px rgba(0, 85, 255, 0.4);
-    }
-
-    /* ===== Button ===== */
-    .btn {
-        width: 100%;
-        padding: 13px;
-        border-radius: 10px;
-        border: none;
-        background: linear-gradient(90deg, #0033cc, #1a75ff);
-        color: white;
-        font-weight: 600;
-        font-size: 15px;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .btn:hover {
-        background: linear-gradient(90deg, #001f99, #0052ff);
-        box-shadow: 0 0 20px rgba(0, 90, 255, 0.6);
-        transform: translateY(-3px);
-    }
-
-    /* ===== Error Message ===== */
-    p {
-        margin-bottom: 15px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 500;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 450px) {
-        form {
-            width: 90%;
-            padding: 35px 25px;
+    <title>Login | Career Guider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
+                        radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.1), transparent);
         }
-
-        h1 {
-            font-size: 20px;
+        .text-gradient {
+            background: linear-gradient(90deg, #2563eb, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-    }
-</style>
+    </style>
 </head>
+<body class="bg-slate-50 text-slate-900 hero-gradient min-h-screen font-sans flex items-center justify-center p-4">
 
-<body>
-    <form action="/login" method="post">
-        {% if error %}
-    <p style="color:red;">{{ error }}</p>
-{% endif %}
+    <div class="max-w-md w-full">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center gap-2 mb-4">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg overflow-hidden shrink-0">
+                    <i class="fas fa-compass fa-lg"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-gradient">Career Guider</span>
+            </a>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Welcome Back</h2>
+            <p class="text-slate-600">Sign in to continue your career journey</p>
+        </div>
 
-<h1>Login to Your Account</h1>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
-            <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        <!-- Card -->
+        <div class="bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 border border-slate-100 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/10">
+            <form action="/login" method="post" class="space-y-6">
+                {% if error %}
+                <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-medium border border-red-100">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="space-y-2">
+                    <label for="exampleInputEmail1" class="text-sm font-semibold text-slate-700 block">Email Address</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-slate-400"></i>
+                        </div>
+                        <input type="email" id="exampleInputEmail1" name="email" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors" placeholder="name@example.com" required>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="exampleInputPassword1" class="text-sm font-semibold text-slate-700 block">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-slate-400"></i>
+                        </div>
+                        <input type="password" id="exampleInputPassword1" name="password" class="w-full pl-10 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-600/50 focus:border-blue-600 transition-colors" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-all hover:shadow-lg shadow-blue-200 flex items-center justify-center gap-2 group">
+                    Sign In <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-slate-600">
+                Don't have an account? <a href="/register" class="text-blue-600 font-semibold hover:text-blue-700 hover:underline transition-colors">Register here</a>
+            </div>
         </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1 " name="password">
-        </div>
-       
-    <button type="submit" class="btn btn-primary">Submit</button>
- 
-    </form>
+    </div>
 
 </body>
-
 </html>
