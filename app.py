@@ -125,10 +125,21 @@ def dashboard():
                 "S": r_vec[3], "E": r_vec[4], "C": r_vec[5]
             }
 
-    # If we have all vectors but no best_stream, trigger generation logi8c or just show "Incomplete"
-    # For now, the dashboard template handles the "If session.get('best_stream')" case.
+    history_data = None
+    try:
+        cur.execute("SELECT suggested_stream, why_stream_suggested, career_road_map, education_score FROM education_and_other_generated_details WHERE student_email=%s ORDER BY id DESC LIMIT 1", (email,))
+        row = cur.fetchone()
+        if row:
+            history_data = {
+                "suggested_stream": row[0],
+                "why_stream_suggested": row[1],
+                "career_road_map": row[2],
+                "education_score": row[3]
+            }
+    except Exception as e:
+        print("Error fetching history:", e)
 
-    return render_template("dashboard.html")
+    return render_template("dashboard.html", history_data=history_data)
  
 
 @app.route("/assessment" , methods =["GET","POST"])
@@ -661,6 +672,112 @@ def intrest_assesment():
    return redirect (url_for("generate_career_profile"))
    # return render_template("generate_career_profile.html")
    
+def generate_reasons(ability_student, riasec_student, interest_student):
+    reasons = []
+    try:
+        math = ability_student[0][0]
+        science = ability_student[0][1]
+        social = ability_student[0][2]
+        language = ability_student[0][3]
+        if science > 0.75: reasons.append("Strong academic performance in Science")
+        if math > 0.75: reasons.append("Strong mathematical ability")
+        if social > 0.75: reasons.append("Strong understanding of social concepts")
+        if language > 0.75: reasons.append("Strong communication and language skills")
+
+        r, i, a, s, e, c = riasec_student[0]
+        if i > 0.7: reasons.append("High analytical and logical thinking")
+        if e > 0.7: reasons.append("Leadership and business mindset")
+        if a > 0.7: reasons.append("Creative thinking ability")
+        if s > 0.7: reasons.append("Strong social and helping nature")
+
+        i_math, i_science, i_business, i_creativity, i_social = interest_student[0]
+        if i_science > 0.6: reasons.append("High interest in Science")
+        if i_math > 0.6: reasons.append("Interest in Mathematics")
+        if i_business > 0.6: reasons.append("Interest in business and finance")
+        if i_creativity > 0.6: reasons.append("Creative interest")
+        if i_social > 0.6: reasons.append("Interest in social activities")
+    except Exception as e:
+        print("Error generating reasons:", e)
+    return reasons
+
+def generate_llm_prompt(reasons, stream):
+    reasons_str = "\n".join([f"- {r}" for r in reasons])
+    prompt = f"""You are a personalized career counselor. The student has been recommended the '{stream}' career path based on their unique skills and profile.
+
+Student's Key Strengths and Skills:
+{reasons_str}
+
+Your task: Write a personalized explanation (2-3 paragraphs) specifically explaining to THIS STUDENT why the '{stream}' career was recommended for them. 
+
+Focus on:
+1. How their specific strengths align with this career
+2. Which of their skills are most valuable for this path
+3. Why this career is particularly suited to their unique profile
+
+Be specific and reference their strengths. Make it personal and encouraging. Avoid generic advice."""
+    return prompt
+
+def get_llm_response(prompt):
+    try:
+        response = inference(prompt)["response"]
+        with open("why_this_career.txt", "w", encoding="utf-8") as f:
+            f.write(response)
+        return response
+    except Exception as e:
+        print("Error getting llm response:", e)
+        return "Explanation could not be generated."
+
+@app.route('/why_this_career')
+def why_this_career():
+    try:
+        with open("why_this_career.txt", "r", encoding="utf-8") as f:
+            content = f.read()
+            if not content.strip():
+                raise Exception("Empty content")
+    except Exception:
+        best_stream = session.get("best_stream")
+        
+        academic_dict = session.get("student_vector")
+        ability_student = np.array([
+            academic_dict.get("Math", 0) if academic_dict else 0,
+            academic_dict.get("Science", 0) if academic_dict else 0,
+            academic_dict.get("Social", 0) if academic_dict else 0,
+            academic_dict.get("Language", 0) if academic_dict else 0
+        ]).reshape(1, -1)
+        
+        riasec_dict = session.get("riasec_vector")
+        riasec_student = np.array([
+            riasec_dict.get("R", 0) if riasec_dict else 0,
+            riasec_dict.get("I", 0) if riasec_dict else 0,
+            riasec_dict.get("A", 0) if riasec_dict else 0,
+            riasec_dict.get("S", 0) if riasec_dict else 0,
+            riasec_dict.get("E", 0) if riasec_dict else 0,
+            riasec_dict.get("C", 0) if riasec_dict else 0
+        ]).reshape(1, -1)
+        
+        interest_dict = session.get("intrest_vector")
+        intrest_student = np.array([
+            interest_dict.get("Math", 0) if interest_dict else 0,
+            interest_dict.get("Science", 0) if interest_dict else 0,
+            interest_dict.get("Business", 0) if interest_dict else 0,
+            interest_dict.get("Creativity", 0) if interest_dict else 0,
+            interest_dict.get("Social", 0) if interest_dict else 0
+        ]).reshape(1, -1)
+        
+        r = generate_reasons(ability_student, riasec_student, intrest_student)
+        p = generate_llm_prompt(r, best_stream)
+        content = get_llm_response(p)
+        
+        try:
+            cur.execute("UPDATE education_and_other_generated_details SET why_stream_suggested=%s WHERE student_email=%s AND suggested_stream=%s", (content, session.get("email"), best_stream))
+            connector.commit()
+        except Exception as e:
+            print("Error updating DB with why_this_career:", e)
+    
+    content_html = markdown.markdown(content, extensions=["fenced_code", "tables"])
+    return render_template("why_this_career.html", explanation=content_html)
+
+
 
 @app.route("/generate_career_profile",methods=["GET","POST"])
 def generate_career_profile():
@@ -734,6 +851,18 @@ def generate_career_profile():
       top_2 = sorted_scores[:2]
 
       session["top_2"] = top_2
+
+      try:
+          r = generate_reasons(ability_student, riasec_student, intrest_student)
+          p = generate_llm_prompt(r, best_stream)
+          llm_resp = get_llm_response(p)
+          
+          # Insert into datbase table education_and_other_generated_details
+          cur.execute("INSERT INTO education_and_other_generated_details (student_email, education_score, academic_vector, personality_vector, interest_vector, suggested_stream, why_stream_suggested, career_road_map) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+          (session.get("email"), session.get("education"), str(ability_student.tolist()), str(riasec_student.tolist()), str(intrest_student.tolist()), best_stream, llm_resp, ""))
+          connector.commit()
+      except Exception as e:
+          print("Error generating LLM reasons or saving to DB:", e)
 
       return render_template(
             "generate_career_profile.html",
@@ -1013,15 +1142,15 @@ def career_roadmap():
         Confidence Level: { session.get("confidence_level") }
 
         All Stream Scores:
-        Science: { session.get("scores")["Science"] }
-        Commerce: { session.get("scores")["Commerce"] }
-        Arts: { session.get("scores")["Arts"] }
+        Science: { session.get("scores")["science"] }
+        Commerce: { session.get("scores")["commerce"] }
+        Arts: { session.get("scores")["arts"] }
 
         Academic Strength Vector (0-1 scale):
-        Math: { session.get("student_vector")["Math"] }
-        Science: { session.get("student_vector")["Science"] }
-        Social Science: { session.get("student_vector")["Social"] }
-        Language: {session.get("student_vector")["Language"] }
+        Math: { session.get("student_vector")["math"] }
+        Science: { session.get("student_vector")["science"] }
+        Social Science: { session.get("student_vector")["social"] }
+        Language: {session.get("student_vector")["language"] }
 
         RIASEC Personality Scores (0-1 scale):
         Realistic: { session.get("riasec_vector")["R"] }
@@ -1063,6 +1192,13 @@ def career_roadmap():
         )
         with open("response.md","w") as f:
             f.write(response)
+        
+        try:
+            cur.execute("UPDATE education_and_other_generated_details SET career_road_map=%s WHERE student_email=%s", (response, session.get("email")))
+            connector.commit()
+        except Exception as e:
+            print("Error updating map in db", e)
+
         return render_template(
         "career_roadmap.html",
         roadmap=roadmap_html

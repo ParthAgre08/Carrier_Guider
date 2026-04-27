@@ -4,22 +4,22 @@
         You must explain the recommended DEGREE BRANCH.
         Do NOT change the predicted branch.
 
-        Best Recommended Career Branch: Computer Science Engineering
-        Confidence Level: 98.01%
+        Best Recommended Career Branch: Game Development
+        Confidence Level: 95.96%
 
         top 2 Branch Scores:
-        [('Computer Science Engineering', 0.9800583136970891), ('Game Development', 0.9686247395952459)]
+        [('Game Development', 0.9596128570099687), ('Computer Science Engineering', 0.9581285122826466)]
 
         Academic Strength (0-1):
-        Math: 0.88
-        Physics: 0.89
-        Chemistry: 0.77
+        Math: 0.56
+        Physics: 0.87
+        Chemistry: 0.86
 
         RIASEC Personality:
-        {'A': 0.6, 'C': 0.76, 'E': 0.52, 'I': 0.8, 'R': 0.64, 'S': 0.76}
+        {'A': 0.76, 'C': 0.76, 'E': 0.6, 'I': 0.8, 'R': 0.8, 'S': 0.76}
 
         Interest Vector:
-        {'Computer_AI': 0.5199999999999999, 'Core_Engineering': 0.24, 'Creative_Tech': 0.43999999999999995, 'Defense_Tech': 0.21999999999999997, 'Entrepreneurship': 0.32, 'Pure_Science': 0.38}
+        {'Computer_AI': 0.7, 'Core_Engineering': 0.24, 'Creative_Tech': 0.62, 'Defense_Tech': 0.21999999999999997, 'Entrepreneurship': 0.4, 'Pure_Science': 0.4}
 
         Instructions:
         1. Explain why this branch suits the student.

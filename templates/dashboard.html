@@ -7,6 +7,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Career Guider</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .sidebar-link.active {
             background-color: #eff6ff;
@@ -104,7 +113,16 @@
                     <!-- Recommendation Card -->
                     <div class="p-8 rounded-3xl relative overflow-hidden group shadow-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
                         <div class="relative z-10">
-                            {% if session.get('best_stream') %}
+                            {% if history_data and history_data.suggested_stream %}
+                                <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-sm">Past Suggested Recommendation</div>
+                                <h2 class="text-4xl font-extrabold mb-2">{{ history_data.suggested_stream }}</h2>
+                                <p class="text-blue-100 mb-6 max-w-md">Our AI previously identified this as your most suitable career path.</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <a href="/why_this_career" class="bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg">
+                                        <i class="fas fa-magic"></i> Why this career?
+                                    </a>
+                                </div>
+                            {% elif session.get('best_stream') %}
                                 <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-sm">Top Recommendation</div>
                                 <h2 class="text-4xl font-extrabold mb-2">{{ session.get('best_stream') }}</h2>
                                 <p class="text-blue-100 mb-8 max-w-md">Our AI engine has identified this as your most suitable career path with a <b>{{ session.get('confidence_level', 'High') }}</b> confidence level.</p>
@@ -193,6 +211,24 @@
                         </div>
                     </div>
 
+                    <!-- Past Generated Data Details -->
+                    {% if history_data %}
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg mt-6">
+                        <div class="relative z-10">
+                            <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-history"></i> Profile History Insights
+                            </h3>
+                            <div class="bg-white/10 rounded-xl p-4 mb-4 backdrop-blur-sm">
+                                <p class="text-sm font-semibold text-blue-100 mb-1">Generated Stream:</p>
+                                <p class="text-lg font-bold">{{ history_data.suggested_stream }}</p>
+                            </div>
+                            <a href="/career_roadmap" class="text-sm font-bold text-white hover:text-blue-200 flex items-center gap-1 group w-full bg-black/20 px-4 py-2 rounded-lg text-center justify-center transition-colors">
+                                View Past Roadmap <i class="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                        <i class="fas fa-chart-pie absolute right-[-20px] bottom-[-20px] text-white/10 text-6xl rotate-12"></i>
+                    </div>
+                    {% else %}
                     <!-- AI Assistant Promo -->
                     <div class="bg-slate-900 rounded-3xl p-6 text-white relative overflow-hidden group">
                         <div class="relative z-10">
@@ -204,6 +240,235 @@
                         </div>
                         <i class="fas fa-robot absolute right-[-10px] bottom-[-10px] text-white/5 text-6xl rotate-12 transition-transform group-hover:rotate-0"></i>
                     </div>
+                    {% endif %}
+
+                    <!-- Top Matches Mini Card -->
+                    {% if session.get('top_2') %}
+                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                            <h3 class="text-lg font-bold mb-4">Top Matches</h3>
+                            <div class="space-y-3">
+                                {% for stream, score in session.get('top_2') %}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                        <span class="font-semibold text-sm">{{ stream }}</span>
+                                        <span class="text-blue-600 text-xs font-bold">{{ (score * 100)|round(1) }}%</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
+
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden glass fixed top-0 w-full h-16 z-50 flex items-center justify-between px-4">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white">
+                <i class="fas fa-compass"></i>
+            </div>
+            <span class="text-xl font-bold text-gradient">Career Guider</span>
+        </div>
+        <button class="text-slate-600"><i class="fas fa-bars fa-lg"></i></button>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar bg-white border-r border-slate-200 flex flex-col hidden md:flex">
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg overflow-hidden">
+                    <i class="fas fa-compass fa-lg"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-gradient">Career Guider</span>
+            </div>
+
+            <nav class="space-y-2">
+                <a href="/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-xl text-blue-600 bg-blue-50 border-r-4 border-blue-600 font-semibold transition-all">
+                    <i class="fas fa-home w-6"></i> Overview
+                </a>
+                <a href="/assessment" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-blue-600 font-medium transition-all">
+                    <i class="fas fa-tasks w-6"></i> Assessments
+                </a>
+                <a href="https://explore-careers-mu.vercel.app" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-blue-600 font-medium transition-all">
+                    <i class="fas fa-search w-6"></i> Explore Careers
+                </a>
+                <a href="/chatbot" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-blue-600 font-medium transition-all">
+                    <i class="fas fa-comments w-6"></i> AI Assistant
+                </a>
+            </nav>
+        </div>
+
+        <div class="mt-auto p-8">
+            <div class="p-4 bg-slate-50 rounded-2xl mb-6">
+                <p class="text-xs font-semibold text-slate-500 uppercase mb-2">Logged in as</p>
+                <p class="text-sm font-bold text-slate-900 truncate">{{ session.get('user', 'User') }}</p>
+            </div>
+            <a href="/logout" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 font-medium transition-all w-full">
+                <i class="fas fa-sign-out-alt w-6"></i> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content pt-20 md:pt-8 bg-slate-50/50">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900">Welcome back, {{ session.get('user', 'Explorer') }}! 👋</h1>
+                    <p class="text-slate-600 font-medium mt-1">Here's what's happening with your career journey.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-4 py-2 bg-white border border-slate-200 rounded-full text-sm font-semibold flex items-center gap-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                        {{ session.get('education', 'General') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Left Column: Primary Actions / Status -->
+                <div class="lg:col-span-2 space-y-8">
+                    
+                    <!-- Recommendation Card -->
+                    <div class="p-8 rounded-3xl relative overflow-hidden group shadow-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+                        <div class="relative z-10">
+                            {% if history_data and history_data.suggested_stream %}
+                                <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-sm">Past Suggested Recommendation</div>
+                                <h2 class="text-4xl font-extrabold mb-2">{{ history_data.suggested_stream }}</h2>
+                                <p class="text-blue-100 mb-6 max-w-md">Our AI previously identified this as your most suitable career path.</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <a href="/why_this_career" class="bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-600 transition-all flex items-center gap-2 shadow-lg">
+                                        <i class="fas fa-magic"></i> Why this career?
+                                    </a>
+                                </div>
+                            {% elif session.get('best_stream') %}
+                                <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-bold uppercase tracking-wider mb-4 backdrop-blur-sm">Top Recommendation</div>
+                                <h2 class="text-4xl font-extrabold mb-2">{{ session.get('best_stream') }}</h2>
+                                <p class="text-blue-100 mb-8 max-w-md">Our AI engine has identified this as your most suitable career path with a <b>{{ session.get('confidence_level', 'High') }}</b> confidence level.</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <a href="/career_roadmap" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all flex items-center gap-2">
+                                        <i class="fas fa-map-marked-alt"></i> View Career Roadmap
+                                    </a>
+                                </div>
+                            {% else %}
+                                <h2 class="text-3xl font-extrabold mb-4">Discover Your Future</h2>
+                                <p class="text-blue-100 mb-8 max-w-md">Complete your assessments to unlock personalized career recommendations and deep AI-powered roadmaps.</p>
+                                <a href="/assessment" class="bg-white text-blue-600 px-6 py-3 rounded-xl font-bold hover:bg-blue-50 transition-all inline-flex items-center gap-2 shadow-lg">
+                                    Start Assessment <i class="fas fa-arrow-right"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <i class="fas fa-rocket text-[15rem] rotate-12"></i>
+                        </div>
+                    </div>
+
+                    <!-- Progress tracking -->
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-blue-600"></i> Assessment Progress
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">1</span>
+                                    {% if session.get('student_vector') %}
+                                        <span class="text-green-500 font-bold text-xs"><i class="fas fa-check-circle"></i> COMPLETE</span>
+                                    {% else %}
+                                        <span class="text-amber-500 font-bold text-xs">PENDING</span>
+                                    {% endif %}
+                                </div>
+                                <h4 class="font-bold text-sm mb-1">Academic</h4>
+                                <p class="text-xs text-slate-500 line-clamp-2">Your grades and subject performance.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">2</span>
+                                    {% if session.get('riasec_vector') %}
+                                        <span class="text-green-500 font-bold text-xs"><i class="fas fa-check-circle"></i> COMPLETE</span>
+                                    {% else %}
+                                        <span class="text-amber-500 font-bold text-xs">PENDING</span>
+                                    {% endif %}
+                                </div>
+                                <h4 class="font-bold text-sm mb-1">Personality</h4>
+                                <p class="text-xs text-slate-500 line-clamp-2">Understanding your RIASEC profile.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold">3</span>
+                                    {% if session.get('intrest_vector') %}
+                                        <span class="text-green-500 font-bold text-xs"><i class="fas fa-check-circle"></i> COMPLETE</span>
+                                    {% else %}
+                                        <span class="text-amber-500 font-bold text-xs">PENDING</span>
+                                    {% endif %}
+                                </div>
+                                <h4 class="font-bold text-sm mb-1">Interests</h4>
+                                <p class="text-xs text-slate-500 line-clamp-2">Identifying what you love most.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Info / Secondary -->
+                <div class="space-y-8">
+                    <!-- Quick Stats -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold mb-4">Your Quick Stats</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500 text-sm">Roadmaps Generated</span>
+                                <span class="font-bold">1</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-500 text-sm">Career Matches Found</span>
+                                <span class="font-bold">{{ session.get('top_2')|length if session.get('top_2') else 0 }}</span>
+                            </div>
+                            <div class="flex items-center justify-between border-t pt-4">
+                                <span class="text-slate-500 text-sm font-semibold">Account Level</span>
+                                <span class="text-blue-600 font-bold text-sm uppercase">Premium Free</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Past Generated Data Details -->
+                    {% if history_data %}
+                    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg mt-6">
+                        <div class="relative z-10">
+                            <h3 class="font-bold text-lg mb-3 flex items-center gap-2">
+                                <i class="fas fa-history"></i> Profile History Insights
+                            </h3>
+                            <div class="bg-white/10 rounded-xl p-4 mb-4 backdrop-blur-sm">
+                                <p class="text-sm font-semibold text-blue-100 mb-1">Generated Stream:</p>
+                                <p class="text-lg font-bold">{{ history_data.suggested_stream }}</p>
+                            </div>
+                            <a href="/career_roadmap" class="text-sm font-bold text-white hover:text-blue-200 flex items-center gap-1 group w-full bg-black/20 px-4 py-2 rounded-lg text-center justify-center transition-colors">
+                                View Past Roadmap <i class="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                        <i class="fas fa-chart-pie absolute right-[-20px] bottom-[-20px] text-white/10 text-6xl rotate-12"></i>
+                    </div>
+                    {% else %}
+                    <!-- AI Assistant Promo -->
+                    <div class="bg-slate-900 rounded-3xl p-6 text-white relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <h3 class="font-bold text-lg mb-2">Need Help?</h3>
+                            <p class="text-slate-400 text-sm mb-4">Our AI chatbot is ready to answer any career-related query.</p>
+                            <a href="/chatbot" class="text-sm font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 group">
+                                Open AI Assistant <i class="fas fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                        <i class="fas fa-robot absolute right-[-10px] bottom-[-10px] text-white/5 text-6xl rotate-12 transition-transform group-hover:rotate-0"></i>
+                    </div>
+                    {% endif %}
 
                     <!-- Top Matches Mini Card -->
                     {% if session.get('top_2') %}

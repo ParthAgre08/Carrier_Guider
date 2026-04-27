@@ -7,14 +7,235 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .hero-gradient {
-            background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent),
-                        radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.1), transparent);
+   <style>
+        /* ── Root tokens matching the Why This Career page ── */
+        :root {
+            --bg-hero:      #e8ecf8;
+            --bg-section:   #f0f3fb;
+            --accent:       #2563eb;
+            --accent-dark:  #1d4ed8;
+            --navy:         #0c1340;
+            --body-txt:     #3a4166;
+            --muted:        #6b7aab;
+            --card-border:  rgba(37,99,235,0.13);
+            --divider:      rgba(37,99,235,0.10);
         }
+
+        /* ── Typography ── */
+        body {
+            font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif !important;
+        }
+
+        h1, h2, h3, h4, h5,
+        .font-bold, .font-extrabold, .font-semibold {
+            font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif !important;
+        }
+
+        /* ── Full-page background: periwinkle hero that fades to white ── */
+        body {
+            background-color: var(--bg-hero) !important;
+            color: var(--navy) !important;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Dot-grid overlay — same as Why This Career page */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: radial-gradient(circle, rgba(37,99,235,0.11) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, black 20%, transparent 100%);
+        }
+
+        /* Radial colour mesh — same as Why This Career page */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 10%  0%,   rgba(37,99,235,0.09), transparent),
+                radial-gradient(ellipse 50% 40% at 90%  90%,  rgba(99,102,241,0.07), transparent),
+                radial-gradient(ellipse 70% 60% at 50%  40%,  rgba(216,223,242,0.45), transparent);
+        }
+
+        /* Make sure all content sits above the fixed pseudo-elements */
+        nav, section, footer, .max-w-7xl {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Glassmorphism nav ── */
+        .glass {
+            background: rgba(232, 236, 248, 0.80) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border-bottom: 1px solid rgba(37,99,235,0.10) !important;
+        }
+
+        /* ── Gradient brand text ── */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── Hero section — uses page bg, no extra bg needed ── */
+        .hero-gradient {
+            background: transparent !important;
+        }
+
+        /* ── Features section — white cards on soft lavender bg ── */
+        #features {
+            background: #ffffff !important;
+        }
+
+        #features .bg-slate-50 {
+            background: var(--bg-hero) !important;
+            border-color: var(--card-border) !important;
+        }
+
+        /* Feature card hover */
+        .feature-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+            border-radius: 16px !important;
+        }
+
         .feature-card:hover {
-            transform: translateY(-5px);
-            transition: all 0.3s ease;
+            transform: translateY(-6px) !important;
+            box-shadow: 0 16px 40px rgba(37,99,235,0.10) !important;
+            border-color: rgba(37,99,235,0.25) !important;
+        }
+
+        /* ── How it Works section ── */
+        #how-it-works {
+            background: var(--bg-section) !important;
+        }
+
+        /* Step circles */
+        #how-it-works .bg-white {
+            background: #ffffff !important;
+            border-color: rgba(37,99,235,0.15) !important;
+        }
+
+        /* Connector line color */
+        #how-it-works .bg-blue-100 {
+            background: rgba(37,99,235,0.15) !important;
+        }
+
+        /* ── Animations (same keyframes as Why This Career) ── */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        @keyframes ping-custom {
+            0%, 100% { transform: scale(1);   opacity: 1;   }
+            50%       { transform: scale(1.6); opacity: 0.4; }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.65s ease both;
+        }
+
+        /* stagger via existing inline animation-delay styles — no change needed */
+
+        /* Ping animation for the hero badge dot */
+        .animate-ping {
+            animation: ping-custom 1.8s ease-in-out infinite !important;
+        }
+
+        /* ── Hero badge pill ── */
+        .bg-blue-50 {
+            background: rgba(37,99,235,0.09) !important;
+        }
+
+        .text-blue-700 {
+            color: var(--accent) !important;
+        }
+
+        .bg-blue-600.animate-ping,
+        span.bg-blue-600 {
+            background: var(--accent) !important;
+        }
+
+        /* ── Primary CTA button ── */
+        .bg-blue-600:not(.rounded-lg):not(.rounded):not([class*="h-"]):not([class*="w-"]) {
+            background: var(--accent) !important;
+            box-shadow: 0 8px 24px rgba(37,99,235,0.25) !important;
+        }
+
+        .hover\:bg-blue-700:hover {
+            background: var(--accent-dark) !important;
+        }
+
+        /* ── Secondary button ── */
+        .bg-white.border.border-slate-200 {
+            border-color: var(--card-border) !important;
+            color: var(--body-txt) !important;
+        }
+
+        .bg-white.border.border-slate-200:hover {
+            border-color: var(--accent) !important;
+            color: var(--accent) !important;
+        }
+
+        /* ── Nav links ── */
+        .text-slate-600 {
+            color: var(--muted) !important;
+        }
+
+        .hover\:text-blue-600:hover {
+            color: var(--accent) !important;
+        }
+
+        /* ── Section headings color ── */
+        .text-slate-900 {
+            color: var(--navy) !important;
+        }
+
+        .text-slate-600:not(nav *) {
+            color: var(--body-txt) !important;
+        }
+
+        /* ── Feature icon containers — match why page's icon style ── */
+        .bg-blue-100   { background: rgba(37,99,235,0.10) !important;  }
+        .text-blue-600 { color: var(--accent) !important;              }
+        .bg-indigo-100 { background: rgba(99,102,241,0.10) !important; }
+        .text-indigo-600{ color: #6366f1 !important;                   }
+        .bg-amber-100  { background: rgba(245,158,11,0.10) !important; }
+        .text-amber-600{ color: #d97706 !important;                    }
+
+        /* Icon container shape — softer like the why page */
+        .w-14.h-14 {
+            border-radius: 14px !important;
+        }
+
+        /* ── Blue underline accent under section title ── */
+        .bg-blue-600.mx-auto.rounded-full {
+            background: linear-gradient(90deg, var(--accent), #6366f1) !important;
+            height: 4px !important;
+            border-radius: 99px !important;
+        }
+
+        /* ── Step number text ── */
+        .text-blue-600 {
+            color: var(--accent) !important;
+        }
+
+        /* ── Footer ── */
+        .bg-slate-900 {
+            background: var(--navy) !important;
+        }
+
+        .bg-blue-600.rounded {
+            background: var(--accent) !important;
         }
     </style>
 </head>

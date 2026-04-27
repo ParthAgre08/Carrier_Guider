@@ -1,450 +1,643 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Interest Quiz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personality Quiz | Career Guider</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+:root {
+    --bg:       #e8ecf8;
+    --accent:   #2563eb;
+    --accent-d: #1d4ed8;
+    --navy:     #0c1340;
+    --body:     #3a4166;
+    --muted:    #6b7aab;
+    --border:   rgba(37,99,235,0.14);
+    --soft:     rgba(37,99,235,0.07);
+}
 
-/* ===== Clean Background ===== */
+* { margin:0; padding:0; box-sizing:border-box; }
+
 body {
-    background: linear-gradient(135deg, #f5f9ff, #eef4ff);
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* ===== Main Card ===== */
-body > div {
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 15px 50px rgba(37, 99, 235, 0.12);
-    padding: 40px !important;
-    border: 1px solid #e5edff;
+/* ── background layers ── */
+body::before {
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0;
+    background-image: radial-gradient(circle, rgba(37,99,235,0.11) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, black 20%, transparent 100%);
+}
+body::after {
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0;
+    background:
+        radial-gradient(ellipse 60% 50% at 10% 0%,  rgba(37,99,235,0.08), transparent),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(99,102,241,0.07), transparent);
 }
 
-/* ===== Main Title ===== */
-h1:first-of-type {
-    font-size: 28px !important;
-    font-weight: 700 !important;
-    color: #1e3a8a;
-    margin-bottom: 30px !important;
+/* ── nav ── */
+nav {
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 2rem; height:58px;
+    background:rgba(232,236,248,0.82);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+}
+.nav-logo {
+    display:flex; align-items:center; gap:9px;
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800; font-size:1.1rem;
+    color:var(--navy); text-decoration:none;
+}
+.nav-icon {
+    width:32px; height:32px; border-radius:9px;
+    background:var(--accent);
+    display:grid; place-items:center;
+    color:white; font-size:13px;
+}
+.nav-back {
+    font-size:.82rem; font-weight:500; color:var(--muted);
+    text-decoration:none; padding:6px 14px;
+    border-radius:99px; border:1px solid var(--border);
+    background:rgba(255,255,255,.5); transition:.2s;
+}
+.nav-back:hover { color:var(--accent); background:white; }
+
+/* ── wrapper ── */
+.page {
+    position:relative; z-index:1;
+    max-width:740px; margin:0 auto;
+    padding:2.5rem 1.25rem 5rem;
 }
 
-/* ===== Section Titles ===== */
-h1[style] {
-    margin-top: 40px;
-    margin-bottom: 15px;
-    padding: 10px 18px;
-    border-radius: 10px;
-    background: #f1f5ff;
-    color: #1d4ed8 !important;
-    font-size: 18px !important;
-    font-weight: 600 !important;
-    border-left: 4px solid #2563eb;
+/* ── top header ── */
+.quiz-header { text-align:center; margin-bottom:2rem; animation:fadeUp .6s ease both; }
+.quiz-eyebrow {
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:.7rem; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--accent);
+    background:rgba(37,99,235,.10); border:1px solid rgba(37,99,235,.18);
+    padding:5px 13px; border-radius:99px; margin-bottom:.9rem;
+}
+.pulse { width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+.quiz-header h1 {
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800;
+    color:var(--navy); letter-spacing:-.02em; margin-bottom:.5rem;
+}
+.quiz-header p { font-size:.93rem; color:var(--muted); }
+
+/* ── progress bar ── */
+.progress-wrap { margin-bottom:2rem; animation:fadeUp .6s .1s ease both; }
+.progress-meta {
+    display:flex; justify-content:space-between;
+    font-size:.78rem; font-weight:600; color:var(--muted);
+    margin-bottom:.5rem;
+}
+.progress-track {
+    height:6px; background:rgba(37,99,235,.12);
+    border-radius:99px; overflow:hidden;
+}
+.progress-fill {
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), #6366f1);
+    border-radius:99px;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
 }
 
-/* ===== Question Cards ===== */
-.mb-6 {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    transition: all 0.25s ease;
+/* ── section card ── */
+.section-card {
+    background:white; border:1px solid var(--border);
+    border-radius:20px; overflow:hidden;
+    animation:fadeUp .5s ease both;
+}
+.section-header {
+    display:flex; align-items:center; gap:12px;
+    padding:1.4rem 1.6rem;
+    background:var(--soft); border-bottom:1px solid var(--border);
+}
+.section-number {
+    width:36px; height:36px; border-radius:10px;
+    background:var(--accent); color:white;
+    display:grid; place-items:center;
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800; font-size:.95rem; flex-shrink:0;
+}
+.section-info h2 {
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:1.05rem; font-weight:700; color:var(--navy);
+}
+.section-info p { font-size:.78rem; color:var(--muted); margin-top:1px; }
+.section-badge {
+    margin-left:auto; font-size:.68rem; font-weight:600;
+    letter-spacing:.07em; text-transform:uppercase;
+    color:var(--accent); background:rgba(37,99,235,.10);
+    padding:4px 10px; border-radius:99px; white-space:nowrap;
 }
 
-.mb-6:hover {
-    border-color: #2563eb;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+/* ── questions inside section ── */
+.questions-body { padding:1.2rem 1.4rem; }
+
+.question-item {
+    padding:1rem 0;
+    border-bottom:1px solid rgba(37,99,235,.07);
+}
+.question-item:last-child { border-bottom:none; }
+
+.question-text {
+    font-size:.9rem; font-weight:600; color:var(--navy);
+    margin-bottom:.85rem; line-height:1.5;
+}
+.question-num {
+    font-size:.72rem; font-weight:700; color:var(--accent);
+    margin-bottom:.3rem; text-transform:uppercase; letter-spacing:.06em;
 }
 
-/* ===== Question Text ===== */
-.mb-6 p {
-    color: #1f2937;
-    margin-bottom: 10px;
+/* ── answer options as interactive cards ── */
+.options-row {
+    display:flex; flex-wrap:wrap; gap:.45rem;
 }
 
-/* ===== Radio Buttons ===== */
-input[type="radio"] {
-    accent-color: #2563eb;
-    margin-right: 8px;
-    transform: scale(1.05);
+.opt-btn {
+    position:relative; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    padding:.45rem .85rem;
+    border:1.5px solid var(--border);
+    border-radius:99px; background:white;
+    font-size:.8rem; font-weight:500; color:var(--body);
+    transition:all .18s ease;
+    user-select:none;
 }
-
-/* ===== Labels ===== */
-label {
-    cursor: pointer;
-    color: #374151;
-    transition: 0.2s ease;
+.opt-btn:hover {
+    border-color:var(--accent);
+    background:rgba(37,99,235,.05);
+    color:var(--accent);
+    transform:translateY(-1px);
 }
-
-label:hover {
-    color: #2563eb;
+.opt-btn.selected {
+    border-color:var(--accent);
+    background:var(--accent);
+    color:white;
+    box-shadow:0 4px 14px rgba(37,99,235,.28);
+    transform:translateY(-2px);
 }
-
-/* ===== Submit Button ===== */
-button[type="submit"] {
-    background: #2563eb !important;
-    border-radius: 8px !important;
-    padding: 12px 40px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease;
+.opt-btn .dot {
+    width:7px; height:7px; border-radius:50%;
+    background:currentColor; opacity:.55; flex-shrink:0;
+    transition:.15s;
 }
+.opt-btn.selected .dot { opacity:1; }
 
-button[type="submit"]:hover {
-    background: #1d4ed8 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+
+
+/* the hidden real radio that gets submitted */
+input[type="radio"] { display:none !important; }
+
+/* ── nav buttons row ── */
+.nav-buttons {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:1.6rem; gap:1rem;
 }
+.btn-prev, .btn-next, .btn-submit {
+    display:inline-flex; align-items:center; gap:7px;
+    padding:.65rem 1.5rem; border-radius:99px;
+    font-size:.85rem; font-weight:600; cursor:pointer;
+    border:none; transition:.2s; font-family:'DM Sans',sans-serif;
+}
+.btn-prev {
+    background:white; color:var(--body);
+    border:1.5px solid var(--border);
+}
+.btn-prev:hover { border-color:var(--accent); color:var(--accent); }
+.btn-next {
+    background:var(--accent); color:white; margin-left:auto;
+    box-shadow:0 6px 20px rgba(37,99,235,.25);
+}
+.btn-next:hover { background:var(--accent-d); transform:translateY(-1px); }
+.btn-submit {
+    background:linear-gradient(135deg, var(--accent), #6366f1);
+    color:white; margin-left:auto;
+    box-shadow:0 8px 24px rgba(37,99,235,.30);
+}
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(37,99,235,.35); }
 
+/* answered count mini indicator */
+.answered-count {
+    font-size:.78rem; color:var(--muted); font-weight:500;
+}
+.answered-count span { color:var(--accent); font-weight:700; }
+
+/* ── unanswered shake warning ── */
+@keyframes shake {
+    0%,100%{ transform:translateX(0); }
+    20%    { transform:translateX(-6px); }
+    40%    { transform:translateX(6px); }
+    60%    { transform:translateX(-4px); }
+    80%    { transform:translateX(4px); }
+}
+.shake { animation:shake .4s ease; }
+
+/* warn unanswered question */
+.question-item.warn .question-text { color:#dc2626; }
+.question-item.warn .options-row { outline:2px solid rgba(220,38,38,.25); border-radius:12px; padding:4px; }
+
+/* ── animations ── */
+@keyframes fadeUp {
+    from{ opacity:0; transform:translateY(20px); }
+    to  { opacity:1; transform:translateY(0); }
+}
+@keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%    { opacity:.5; transform:scale(1.4); }
+}
+@keyframes slideIn {
+    from{ opacity:0; transform:translateX(40px); }
+    to  { opacity:1; transform:translateX(0); }
+}
+@keyframes slideOut {
+    from{ opacity:1; transform:translateX(0); }
+    to  { opacity:0; transform:translateX(-40px); }
+}
+.slide-in  { animation:slideIn .35s ease both; }
+.slide-out { animation:slideOut .25s ease both; }
+
+/* ── completion overlay ── */
+.complete-screen {
+    display:none;
+    position:fixed; inset:0; z-index:200;
+    background:rgba(12,19,64,.55);
+    backdrop-filter:blur(6px);
+    place-items:center;
+}
+.complete-screen.show { display:grid; }
+.complete-box {
+    background:white; border-radius:24px;
+    padding:2.5rem 2rem; text-align:center;
+    max-width:380px; width:90%;
+    animation:fadeUp .4s ease;
+}
+.complete-box .icon { font-size:3rem; margin-bottom:1rem; }
+.complete-box h2 {
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:1.5rem; font-weight:800; color:var(--navy); margin-bottom:.5rem;
+}
+.complete-box p { font-size:.9rem; color:var(--muted); margin-bottom:1.5rem; }
+.complete-box .submit-final {
+    background:linear-gradient(135deg, var(--accent), #6366f1);
+    color:white; border:none; border-radius:99px;
+    padding:.75rem 2rem; font-size:.9rem; font-weight:700;
+    cursor:pointer; width:100%; font-family:'DM Sans',sans-serif;
+    box-shadow:0 8px 24px rgba(37,99,235,.30); transition:.2s;
+}
+.complete-box .submit-final:hover { transform:translateY(-2px); }
+
+/* mobile tweaks */
+@media(max-width:520px){
+    .options-row { flex-direction:column; }
+    .opt-btn { border-radius:12px; }
+}
 </style>
 </head>
+<body>
 
-<body class="min-h-screen flex items-center justify-center">
+<!-- Nav -->
+<nav>
+    <a href="#" class="nav-logo">
+        <div class="nav-icon"><i class="fas fa-compass"></i></div>
+        Career Guider
+    </a>
+    <a href="/dashboard" class="nav-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</nav>
 
-<div class="bg-white p-8 mt-10 rounded-xl shadow-lg w-full max-w-3xl">
+<div class="page">
 
-    <h1 class="text-2xl font-bold text-center mb-6">Personality Checking Quiz</h1>
+    <!-- Header -->
+    <div class="quiz-header">
+        <div class="quiz-eyebrow"><span class="pulse"></span> RIASEC Assessment</div>
+        <h1>Personality Quiz</h1>
+        <p>Select the option that best describes you — there are no right or wrong answers.</p>
+    </div>
 
-    <form action="/personality_assessment" method="POST"> 
+    <!-- Progress -->
+    <div class="progress-wrap">
+        <div class="progress-meta">
+            <span id="sectionLabel">Section 1 of 6 — Realistic</span>
+            <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+    </div>
 
-        <!-- Question Template -->
-        <!-- Repeat for 6 Questions -->
-<h1 style="font-size: 25px; font-weight: bold;" >Realistic</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I enjoy repairing electronic devices or machines.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_r" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_r" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_r" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_r" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_r" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
+    <!-- FORM — action/method intact, all names/values intact -->
+    <form action="/personality_assessment" method="POST" id="quizForm">
 
-        <div class="mb-6">
-            <p class="font-semibold">2.I enjoy practical lab experiments.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_r" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_r" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_r" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_r" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_r" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
+        <!-- Hidden real radio inputs (submitted) — one per question -->
+        <!-- Realistic -->
+        <input type="radio" name="q1_r" id="q1_r_5" value="5"><input type="radio" name="q1_r" id="q1_r_4" value="4"><input type="radio" name="q1_r" id="q1_r_3" value="3"><input type="radio" name="q1_r" id="q1_r_2" value="2"><input type="radio" name="q1_r" id="q1_r_1" value="1">
+        <input type="radio" name="q2_r" id="q2_r_5" value="5"><input type="radio" name="q2_r" id="q2_r_4" value="4"><input type="radio" name="q2_r" id="q2_r_3" value="3"><input type="radio" name="q2_r" id="q2_r_2" value="2"><input type="radio" name="q2_r" id="q2_r_1" value="1">
+        <input type="radio" name="q3_r" id="q3_r_5" value="5"><input type="radio" name="q3_r" id="q3_r_4" value="4"><input type="radio" name="q3_r" id="q3_r_3" value="3"><input type="radio" name="q3_r" id="q3_r_2" value="2"><input type="radio" name="q3_r" id="q3_r_1" value="1">
+        <input type="radio" name="q4_r" id="q4_r_5" value="5"><input type="radio" name="q4_r" id="q4_r_4" value="4"><input type="radio" name="q4_r" id="q4_r_3" value="3"><input type="radio" name="q4_r" id="q4_r_2" value="2"><input type="radio" name="q4_r" id="q4_r_1" value="1">
+        <input type="radio" name="q5_r" id="q5_r_5" value="5"><input type="radio" name="q5_r" id="q5_r_4" value="4"><input type="radio" name="q5_r" id="q5_r_3" value="3"><input type="radio" name="q5_r" id="q5_r_2" value="2"><input type="radio" name="q5_r" id="q5_r_1" value="1">
+        <!-- Investigative -->
+        <input type="radio" name="q1_i" id="q1_i_5" value="5"><input type="radio" name="q1_i" id="q1_i_4" value="4"><input type="radio" name="q1_i" id="q1_i_3" value="3"><input type="radio" name="q1_i" id="q1_i_2" value="2"><input type="radio" name="q1_i" id="q1_i_1" value="1">
+        <input type="radio" name="q2_i" id="q2_i_5" value="5"><input type="radio" name="q2_i" id="q2_i_4" value="4"><input type="radio" name="q2_i" id="q2_i_3" value="3"><input type="radio" name="q2_i" id="q2_i_2" value="2"><input type="radio" name="q2_i" id="q2_i_1" value="1">
+        <input type="radio" name="q3_i" id="q3_i_5" value="5"><input type="radio" name="q3_i" id="q3_i_4" value="4"><input type="radio" name="q3_i" id="q3_i_3" value="3"><input type="radio" name="q3_i" id="q3_i_2" value="2"><input type="radio" name="q3_i" id="q3_i_1" value="1">
+        <input type="radio" name="q4_i" id="q4_i_5" value="5"><input type="radio" name="q4_i" id="q4_i_4" value="4"><input type="radio" name="q4_i" id="q4_i_3" value="3"><input type="radio" name="q4_i" id="q4_i_2" value="2"><input type="radio" name="q4_i" id="q4_i_1" value="1">
+        <input type="radio" name="q5_i" id="q5_i_5" value="5"><input type="radio" name="q5_i" id="q5_i_4" value="4"><input type="radio" name="q5_i" id="q5_i_3" value="3"><input type="radio" name="q5_i" id="q5_i_2" value="2"><input type="radio" name="q5_i" id="q5_i_1" value="1">
+        <!-- Artistic -->
+        <input type="radio" name="q1_a" id="q1_a_5" value="5"><input type="radio" name="q1_a" id="q1_a_4" value="4"><input type="radio" name="q1_a" id="q1_a_3" value="3"><input type="radio" name="q1_a" id="q1_a_2" value="2"><input type="radio" name="q1_a" id="q1_a_1" value="1">
+        <input type="radio" name="q2_a" id="q2_a_5" value="5"><input type="radio" name="q2_a" id="q2_a_4" value="4"><input type="radio" name="q2_a" id="q2_a_3" value="3"><input type="radio" name="q2_a" id="q2_a_2" value="2"><input type="radio" name="q2_a" id="q2_a_1" value="1">
+        <input type="radio" name="q3_a" id="q3_a_5" value="5"><input type="radio" name="q3_a" id="q3_a_4" value="4"><input type="radio" name="q3_a" id="q3_a_3" value="3"><input type="radio" name="q3_a" id="q3_a_2" value="2"><input type="radio" name="q3_a" id="q3_a_1" value="1">
+        <input type="radio" name="q4_a" id="q4_a_5" value="5"><input type="radio" name="q4_a" id="q4_a_4" value="4"><input type="radio" name="q4_a" id="q4_a_3" value="3"><input type="radio" name="q4_a" id="q4_a_2" value="2"><input type="radio" name="q4_a" id="q4_a_1" value="1">
+        <input type="radio" name="q5_a" id="q5_a_5" value="5"><input type="radio" name="q5_a" id="q5_a_4" value="4"><input type="radio" name="q5_a" id="q5_a_3" value="3"><input type="radio" name="q5_a" id="q5_a_2" value="2"><input type="radio" name="q5_a" id="q5_a_1" value="1">
+        <!-- Social -->
+        <input type="radio" name="q1_s" id="q1_s_5" value="5"><input type="radio" name="q1_s" id="q1_s_4" value="4"><input type="radio" name="q1_s" id="q1_s_3" value="3"><input type="radio" name="q1_s" id="q1_s_2" value="2"><input type="radio" name="q1_s" id="q1_s_1" value="1">
+        <input type="radio" name="q2_s" id="q2_s_5" value="5"><input type="radio" name="q2_s" id="q2_s_4" value="4"><input type="radio" name="q2_s" id="q2_s_3" value="3"><input type="radio" name="q2_s" id="q2_s_2" value="2"><input type="radio" name="q2_s" id="q2_s_1" value="1">
+        <input type="radio" name="q3_s" id="q3_s_5" value="5"><input type="radio" name="q3_s" id="q3_s_4" value="4"><input type="radio" name="q3_s" id="q3_s_3" value="3"><input type="radio" name="q3_s" id="q3_s_2" value="2"><input type="radio" name="q3_s" id="q3_s_1" value="1">
+        <input type="radio" name="q4_s" id="q4_s_5" value="5"><input type="radio" name="q4_s" id="q4_s_4" value="4"><input type="radio" name="q4_s" id="q4_s_3" value="3"><input type="radio" name="q4_s" id="q4_s_2" value="2"><input type="radio" name="q4_s" id="q4_s_1" value="1">
+        <input type="radio" name="q5_s" id="q5_s_5" value="5"><input type="radio" name="q5_s" id="q5_s_4" value="4"><input type="radio" name="q5_s" id="q5_s_3" value="3"><input type="radio" name="q5_s" id="q5_s_2" value="2"><input type="radio" name="q5_s" id="q5_s_1" value="1">
+        <!-- Enterprising -->
+        <input type="radio" name="q1_e" id="q1_e_5" value="5"><input type="radio" name="q1_e" id="q1_e_4" value="4"><input type="radio" name="q1_e" id="q1_e_3" value="3"><input type="radio" name="q1_e" id="q1_e_2" value="2"><input type="radio" name="q1_e" id="q1_e_1" value="1">
+        <input type="radio" name="q2_e" id="q2_e_5" value="5"><input type="radio" name="q2_e" id="q2_e_4" value="4"><input type="radio" name="q2_e" id="q2_e_3" value="3"><input type="radio" name="q2_e" id="q2_e_2" value="2"><input type="radio" name="q2_e" id="q2_e_1" value="1">
+        <input type="radio" name="q3_e" id="q3_e_5" value="5"><input type="radio" name="q3_e" id="q3_e_4" value="4"><input type="radio" name="q3_e" id="q3_e_3" value="3"><input type="radio" name="q3_e" id="q3_e_2" value="2"><input type="radio" name="q3_e" id="q3_e_1" value="1">
+        <input type="radio" name="q4_e" id="q4_e_5" value="5"><input type="radio" name="q4_e" id="q4_e_4" value="4"><input type="radio" name="q4_e" id="q4_e_3" value="3"><input type="radio" name="q4_e" id="q4_e_2" value="2"><input type="radio" name="q4_e" id="q4_e_1" value="1">
+        <input type="radio" name="q5_e" id="q5_e_5" value="5"><input type="radio" name="q5_e" id="q5_e_4" value="4"><input type="radio" name="q5_e" id="q5_e_3" value="3"><input type="radio" name="q5_e" id="q5_e_2" value="2"><input type="radio" name="q5_e" id="q5_e_1" value="1">
+        <!-- Conventional -->
+        <input type="radio" name="q1_c" id="q1_c_5" value="5"><input type="radio" name="q1_c" id="q1_c_4" value="4"><input type="radio" name="q1_c" id="q1_c_3" value="3"><input type="radio" name="q1_c" id="q1_c_2" value="2"><input type="radio" name="q1_c" id="q1_c_1" value="1">
+        <input type="radio" name="q2_c" id="q2_c_5" value="5"><input type="radio" name="q2_c" id="q2_c_4" value="4"><input type="radio" name="q2_c" id="q2_c_3" value="3"><input type="radio" name="q2_c" id="q2_c_2" value="2"><input type="radio" name="q2_c" id="q2_c_1" value="1">
+        <input type="radio" name="q3_c" id="q3_c_5" value="5"><input type="radio" name="q3_c" id="q3_c_4" value="4"><input type="radio" name="q3_c" id="q3_c_3" value="3"><input type="radio" name="q3_c" id="q3_c_2" value="2"><input type="radio" name="q3_c" id="q3_c_1" value="1">
+        <input type="radio" name="q4_c" id="q4_c_5" value="5"><input type="radio" name="q4_c" id="q4_c_4" value="4"><input type="radio" name="q4_c" id="q4_c_3" value="3"><input type="radio" name="q4_c" id="q4_c_2" value="2"><input type="radio" name="q4_c" id="q4_c_1" value="1">
+        <input type="radio" name="q5_c" id="q5_c_5" value="5"><input type="radio" name="q5_c" id="q5_c_4" value="4"><input type="radio" name="q5_c" id="q5_c_3" value="3"><input type="radio" name="q5_c" id="q5_c_2" value="2"><input type="radio" name="q5_c" id="q5_c_1" value="1">
 
-        <div class="mb-6">
-            <p class="font-semibold">3.I like working with tools and equipment.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_r" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_r" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_r" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_r" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_r" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
+        <!-- Visual section rendered by JS -->
+        <div id="sectionRenderer"></div>
 
-        <div class="mb-6">
-            <p class="font-semibold">4.I prefer physical work over theoretical discussions.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_r" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_r" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_r" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_r" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_r" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-
-        <div class="mb-6">
-            <p class="font-semibold">5.I enjoy subjects involving technical drawing or mechanics.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_r" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_r" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_r" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_r" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_r" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-
-        
-
-
-        <h1 style="font-size: 25px; font-weight: bold;">Investigative</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I enjoy solving complex math problems.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_i" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_i" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_i" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_i" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_i" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">2.I am curious about how things work scientifically.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_i" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_i" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_i" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_i" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_i" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">3.I am interested in subjects like Physics, Chemistry, or Biology.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_i" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_i" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_i" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_i" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_i" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">4.I try to find patterns in information.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_i" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_i" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_i" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_i" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_i" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">5.I enjoy researching new topics.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_i" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_i" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_i" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_i" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_i" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-
-
-        <h1 style="font-size: 25px; font-weight: bold;">Artistic</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I like writing stories, poems, or content.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_a" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_a" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_a" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_a" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_a" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">2.I enjoy to do music, dance, or drama activities.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_a" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_a" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_a" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_a" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_a" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">3.I enjoy designing posters or digital content.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_a" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_a" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_a" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_a" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_a" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">4.I prefer creative projects over structured assignments.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_a" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_a" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_a" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_a" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_a" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">5.I think of new and unique ideas often.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_a" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_a" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_a" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_a" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_a" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-
-
-        <h1 style="font-size: 25px; font-weight: bold;">Social (Helping, Teaching, Supporting)</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I enjoy helping others solve problems.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_s" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_s" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_s" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_s" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_s" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">2.I feel happy when someone understands something because of me.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_s" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_s" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_s" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_s" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_s" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">3.I prefer group work over working alone.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_s" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_s" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_s" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_s" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_s" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">4.I enjoy volunteering or social work.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_s" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_s" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_s" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_s" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_s" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">5.I enjoy counseling or guiding friends.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_s" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_s" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_s" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_s" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_s" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-        
-
-         <h1 style="font-size: 25px; font-weight: bold;">Enterprising (Leadership, Business, Persuasion)</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I enjoy leading a group.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_e" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_e" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_e" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_e" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_e" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">2.I feel confident speaking in public.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_e" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_e" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_e" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_e" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_e" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">3.I am interested in business or startups.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_e" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_e" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_e" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_e" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_e" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">4.I like organizing events or activities.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_e" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_e" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_e" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_e" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_e" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">5.I enjoy taking risks to achieve success.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_e" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_e" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_e" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_e" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_e" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-         <h1 style="font-size: 25px; font-weight: bold;">Conventional (Organized, Structured, Detail-Oriented)</h1><br>
-        <div class="mb-6">
-            <p class="font-semibold">1.I prefer clear rules and structure.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q1_c" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q1_c" value="4"> Agree</label><br>
-                <label><input type="radio" name="q1_c" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q1_c" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q1_c" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">2.I follow instructions carefully.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q2_c" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q2_c" value="4"> Agree</label><br>
-                <label><input type="radio" name="q2_c" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q2_c" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q2_c" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">3.I enjoy planning schedules.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q3_c" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q3_c" value="4"> Agree</label><br>
-                <label><input type="radio" name="q3_c" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q3_c" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q3_c" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">4.I would prefer stable job environments.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q4_c" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q4_c" value="4"> Agree</label><br>
-                <label><input type="radio" name="q4_c" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q4_c" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q4_c" value="1"> Strongly Disagree</label>
-            </div>
-        </div>
-        <div class="mb-6">
-            <p class="font-semibold">5.I prefer routine tasks over unpredictable ones.</p>
-            <div class="space-y-1 mt-2">
-                <label><input type="radio" name="q5_c" value="5"> Strongly Agree</label><br>
-                <label><input type="radio" name="q5_c" value="4"> Agree</label><br>
-                <label><input type="radio" name="q5_c" value="3"> Neutral</label><br>
-                <label><input type="radio" name="q5_c" value="2"> Disagree</label><br>
-                <label><input type="radio" name="q5_c" value="1"> Strongly Disagree</label>
-            </div>
-        </div><br><br>
-
-        <div class="text-center">
-            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-800">
-                Submit Quiz
+        <!-- Nav buttons -->
+        <div class="nav-buttons" id="navButtons">
+            <button type="button" class="btn-prev" id="btnPrev" style="display:none" onclick="changeSection(-1)">
+                <i class="fas fa-arrow-left"></i> Previous
+            </button>
+            <div class="answered-count" id="answeredCount"></div>
+            <button type="button" class="btn-next" id="btnNext" onclick="changeSection(1)">
+                Next <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
     </form>
-
-
-
 </div>
 
+<!-- Completion overlay -->
+<div class="complete-screen" id="completeScreen">
+    <div class="complete-box">
+        <div class="icon" style="width:52px;height:52px;background:var(--accent);border-radius:14px;display:grid;place-items:center;margin:0 auto 1rem;"><i class="fas fa-check" style="color:white;font-size:1.3rem;"></i></div>
+        <h2>All Done!</h2>
+        <p>You've answered all 30 questions. Submit now to see your RIASEC personality profile.</p>
+        <button class="submit-final" onclick="document.getElementById('quizForm').submit()">
+            <i class="fas fa-paper-plane"></i> Submit
+        </button>
+    </div>
+</div>
+
+<script>
+const SECTIONS = [
+    {
+        key:'r', title:'Realistic', sub:'Hands-on, practical, technical',
+        badge:'Section 1 / 6',
+        qs:[
+            'I enjoy repairing electronic devices or machines.',
+            'I enjoy practical lab experiments.',
+            'I like working with tools and equipment.',
+            'I prefer physical work over theoretical discussions.',
+            'I enjoy subjects involving technical drawing or mechanics.'
+        ]
+    },
+    {
+        key:'i', title:'Investigative', sub:'Analytical, curious, research-driven',
+        badge:'Section 2 / 6',
+        qs:[
+            'I enjoy solving complex math problems.',
+            'I am curious about how things work scientifically.',
+            'I am interested in subjects like Physics, Chemistry, or Biology.',
+            'I try to find patterns in information.',
+            'I enjoy researching new topics.'
+        ]
+    },
+    {
+        key:'a', title:'Artistic', sub:'Creative, expressive, imaginative',
+        badge:'Section 3 / 6',
+        qs:[
+            'I like writing stories, poems, or content.',
+            'I enjoy music, dance, or drama activities.',
+            'I enjoy designing posters or digital content.',
+            'I prefer creative projects over structured assignments.',
+            'I think of new and unique ideas often.'
+        ]
+    },
+    {
+        key:'s', title:'Social', sub:'Helping, teaching, supporting',
+        badge:'Section 4 / 6',
+        qs:[
+            'I enjoy helping others solve problems.',
+            'I feel happy when someone understands something because of me.',
+            'I prefer group work over working alone.',
+            'I enjoy volunteering or social work.',
+            'I enjoy counseling or guiding friends.'
+        ]
+    },
+    {
+        key:'e', title:'Enterprising', sub:'Leadership, business, persuasion',
+        badge:'Section 5 / 6',
+        qs:[
+            'I enjoy leading a group.',
+            'I feel confident speaking in public.',
+            'I am interested in business or startups.',
+            'I like organizing events or activities.',
+            'I enjoy taking risks to achieve success.'
+        ]
+    },
+    {
+        key:'c', title:'Conventional', sub:'Organized, structured, detail-oriented',
+        badge:'Section 6 / 6',
+        qs:[
+            'I prefer clear rules and structure.',
+            'I follow instructions carefully.',
+            'I enjoy planning schedules.',
+            'I would prefer stable job environments.',
+            'I prefer routine tasks over unpredictable ones.'
+        ]
+    }
+];
+
+const OPTS = [
+    {val:'5', label:'Strongly Agree'},
+    {val:'4', label:'Agree'},
+    {val:'3', label:'Neutral'},
+    {val:'2', label:'Disagree'},
+    {val:'1', label:'Strongly Disagree'}
+];
+
+let current = 0;
+
+function getAnswered(secIdx) {
+    const k = SECTIONS[secIdx].key;
+    return [1,2,3,4,5].filter(n => {
+        const name = `q${n}_${k}`;
+        return document.querySelector(`input[name="${name}"]:checked`);
+    }).length;
+}
+
+function renderSection(idx, dir=1) {
+    const sec = SECTIONS[idx];
+    const renderer = document.getElementById('sectionRenderer');
+
+    renderer.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.className = 'section-card slide-in';
+
+    // header
+    let headerHTML = `
+        <div class="section-header">
+            <div class="section-number">${idx+1}</div>
+            <div class="section-info">
+                <h2>${sec.title}</h2>
+                <p>${sec.sub}</p>
+            </div>
+            <span class="section-badge">${sec.badge}</span>
+        </div>
+        <div class="questions-body">
+    `;
+
+    sec.qs.forEach((q, qi) => {
+        const name = `q${qi+1}_${sec.key}`;
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        const curVal = checked ? checked.value : null;
+
+        headerHTML += `<div class="question-item" data-name="${name}">
+            <div class="question-num">Question ${qi+1}</div>
+            <div class="question-text">${q}</div>
+            <div class="options-row">`;
+
+        OPTS.forEach(o => {
+            const sel = curVal === o.val ? 'selected' : '';
+            headerHTML += `<button type="button" class="opt-btn ${sel}" data-name="${name}" data-val="${o.val}" onclick="pick(this)">
+                <span class="dot"></span>${o.label}
+            </button>`;
+        });
+
+        headerHTML += `</div></div>`;
+    });
+
+    headerHTML += `</div>`;
+    card.innerHTML = headerHTML;
+    renderer.appendChild(card);
+
+    updateUI();
+}
+
+function pick(btn) {
+    const name = btn.dataset.name;
+    const val  = btn.dataset.val;
+
+    // update visual
+    document.querySelectorAll(`.opt-btn[data-name="${name}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    // check real hidden radio
+    const radio = document.getElementById(`${name}_${val}`);
+    if (radio) radio.checked = true;
+
+    // remove warn
+    const qItem = btn.closest('.question-item');
+    if (qItem) qItem.classList.remove('warn');
+
+    updateUI();
+
+    // auto-advance if last question in section and all answered
+    const sec = SECTIONS[current];
+    const allDone = [1,2,3,4,5].every(n => document.querySelector(`input[name="q${n}_${sec.key}"]:checked`));
+    if (allDone && current < SECTIONS.length - 1) {
+        setTimeout(() => changeSection(1), 320);
+    } else if (allDone && current === SECTIONS.length - 1) {
+        setTimeout(() => document.getElementById('completeScreen').classList.add('show'), 400);
+    }
+}
+
+function updateUI() {
+    // progress
+    let total = 0;
+    SECTIONS.forEach((s,i) => total += getAnswered(i));
+    const pct = Math.round((total / 30) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+    document.getElementById('sectionLabel').textContent =
+        `Section ${current+1} of 6 — ${SECTIONS[current].title}`;
+
+    // answered count
+    const ans = getAnswered(current);
+    document.getElementById('answeredCount').innerHTML =
+        `<span>${ans}</span> / 5 answered`;
+
+    // prev btn
+    document.getElementById('btnPrev').style.display = current === 0 ? 'none' : 'inline-flex';
+
+    // next/submit btn
+    const nextBtn = document.getElementById('btnNext');
+    if (current === SECTIONS.length - 1) {
+        nextBtn.innerHTML = '<i class="fas fa-check"></i> Finish';
+        nextBtn.className = 'btn-submit';
+    } else {
+        nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+        nextBtn.className = 'btn-next';
+    }
+}
+
+function changeSection(dir) {
+    // validate all 5 answered
+    const sec = SECTIONS[current];
+    const unanswered = [];
+    [1,2,3,4,5].forEach(n => {
+        const name = `q${n}_${sec.key}`;
+        if (!document.querySelector(`input[name="${name}"]:checked`)) unanswered.push(name);
+    });
+
+    if (unanswered.length > 0) {
+        unanswered.forEach(name => {
+            const item = document.querySelector(`.question-item[data-name="${name}"]`);
+            if (item) item.classList.add('warn');
+        });
+        const card = document.querySelector('.section-card');
+        if (card) { card.classList.add('shake'); setTimeout(() => card.classList.remove('shake'), 500); }
+        return;
+    }
+
+    if (dir === 1 && current === SECTIONS.length - 1) {
+        document.getElementById('completeScreen').classList.add('show');
+        return;
+    }
+
+    current = Math.max(0, Math.min(SECTIONS.length - 1, current + dir));
+    renderSection(current, dir);
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// init
+renderSection(0);
+</script>
 </body>
 </html>

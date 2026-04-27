@@ -1,239 +1,481 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>12th PCM Interest Assessment</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interest Assessment – Science (PCM) | Career Guider</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+:root {
+    --bg:       #e8ecf8;
+    --accent:   #2563eb;
+    --accent-d: #1d4ed8;
+    --navy:     #0c1340;
+    --body:     #3a4166;
+    --muted:    #6b7aab;
+    --border:   rgba(37,99,235,0.14);
+    --soft:     rgba(37,99,235,0.07);
+}
 
-/* ===== Background ===== */
+* { margin:0; padding:0; box-sizing:border-box; }
+
 body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 50%, #e6f0ff 100%);
-    padding: 40px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--navy);
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/* ===== Main Container ===== */
-.container {
-    max-width: 900px;
-    margin: auto;
-    background: #ffffff;
-    padding: 45px;
-    border-radius: 25px;
-    border: 1px solid rgba(0, 90, 255, 0.2);
-    box-shadow:
-        0 25px 70px rgba(0, 60, 255, 0.12),
-        0 0 35px rgba(0, 90, 255, 0.08);
-    animation: fadeUp 0.8s ease-in-out;
+body::before {
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0;
+    background-image: radial-gradient(circle, rgba(37,99,235,0.11) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, black 20%, transparent 100%);
+}
+body::after {
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none; z-index:0;
+    background:
+        radial-gradient(ellipse 60% 50% at 10% 0%,  rgba(37,99,235,0.08), transparent),
+        radial-gradient(ellipse 50% 40% at 90% 90%, rgba(99,102,241,0.07), transparent);
 }
 
-/* ===== Heading ===== */
-h1 {
-    text-align: center;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* ── nav ── */
+nav {
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 2rem; height:58px;
+    background:rgba(232,236,248,0.82);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+}
+.nav-logo {
+    display:flex; align-items:center; gap:9px;
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800; font-size:1.1rem;
+    color:var(--navy); text-decoration:none;
+}
+.nav-icon {
+    width:32px; height:32px; border-radius:9px;
+    background:var(--accent);
+    display:grid; place-items:center;
+    color:white; font-size:13px;
+}
+.nav-back {
+    font-size:.82rem; font-weight:500; color:var(--muted);
+    text-decoration:none; padding:6px 14px;
+    border-radius:99px; border:1px solid var(--border);
+    background:rgba(255,255,255,.5); transition:.2s;
+}
+.nav-back:hover { color:var(--accent); background:white; }
+
+/* ── wrapper ── */
+.page {
+    position:relative; z-index:1;
+    max-width:740px; margin:0 auto;
+    padding:2.5rem 1.25rem 5rem;
 }
 
-/* ===== Subtitle ===== */
-.subtitle {
-    text-align: center;
-    margin-bottom: 35px;
-    color: #4a5c9a;
+/* ── top header ── */
+.quiz-header { text-align:center; margin-bottom:2rem; animation:fadeUp .6s ease both; }
+.quiz-eyebrow {
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:.7rem; font-weight:600; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--accent);
+    background:rgba(37,99,235,.10); border:1px solid rgba(37,99,235,.18);
+    padding:5px 13px; border-radius:99px; margin-bottom:.9rem;
+}
+.pulse { width:6px; height:6px; background:var(--accent); border-radius:50%; animation:pulse 2s infinite; }
+.quiz-header h1 {
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800;
+    color:var(--navy); letter-spacing:-.02em; margin-bottom:.5rem;
+}
+.quiz-header p { font-size:.93rem; color:var(--muted); }
+
+/* ── progress bar ── */
+.progress-wrap { margin-bottom:2rem; animation:fadeUp .6s .1s ease both; }
+.progress-meta {
+    display:flex; justify-content:space-between;
+    font-size:.78rem; font-weight:600; color:var(--muted);
+    margin-bottom:.5rem;
+}
+.progress-track {
+    height:6px; background:rgba(37,99,235,.12);
+    border-radius:99px; overflow:hidden;
+}
+.progress-fill {
+    height:100%;
+    background:linear-gradient(90deg, var(--accent), #6366f1);
+    border-radius:99px;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
 }
 
-/* ===== Question Card ===== */
-.question {
-    margin-bottom: 25px;
-    padding: 25px;
-    background: rgba(0, 90, 255, 0.05);
-    border-radius: 18px;
-    border: 1px solid rgba(0, 90, 255, 0.15);
-    transition: 0.3s ease;
+/* ── section card ── */
+.section-card {
+    background:white; border:1px solid var(--border);
+    border-radius:20px; overflow:hidden;
+    animation:fadeUp .5s ease both;
+    margin-bottom:1.2rem;
+}
+.section-header {
+    display:flex; align-items:center; gap:12px;
+    padding:1.4rem 1.6rem;
+    background:var(--soft); border-bottom:1px solid var(--border);
+}
+.section-number {
+    width:36px; height:36px; border-radius:10px;
+    background:var(--accent); color:white;
+    display:grid; place-items:center;
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:800; font-size:.95rem; flex-shrink:0;
+}
+.section-info h2 {
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:1.05rem; font-weight:700; color:var(--navy);
+}
+.section-info p { font-size:.78rem; color:var(--muted); margin-top:1px; }
+
+/* ── questions inside section ── */
+.questions-body { padding:1.2rem 1.4rem; }
+
+.question-item {
+    padding:1rem 0;
+    border-bottom:1px solid rgba(37,99,235,.07);
+}
+.question-item:last-child { border-bottom:none; }
+
+.question-text {
+    font-size:.9rem; font-weight:600; color:var(--navy);
+    margin-bottom:.85rem; line-height:1.5;
+}
+.question-num {
+    font-size:.72rem; font-weight:700; color:var(--accent);
+    margin-bottom:.3rem; text-transform:uppercase; letter-spacing:.06em;
 }
 
-.question:hover {
-    background: rgba(0, 90, 255, 0.08);
-    transform: translateY(-3px);
+/* ── answer options ── */
+.options-row {
+    display:flex; flex-wrap:wrap; gap:.45rem;
 }
 
-/* Question Title */
-.question h3 {
-    margin-bottom: 12px;
-    font-size: 16px;
-    color: #1a2a6c;
+.opt-btn {
+    position:relative; cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    padding:.45rem .85rem;
+    border:1.5px solid var(--border);
+    border-radius:99px; background:white;
+    font-size:.8rem; font-weight:500; color:var(--body);
+    transition:all .18s ease;
+    user-select:none; font-family:'DM Sans',sans-serif;
 }
-
-/* ===== Scale Options ===== */
-.scale {
-    display: flex;
-    justify-content: space-between;
-    max-width: 350px;
+.opt-btn:hover {
+    border-color:var(--accent);
+    background:rgba(37,99,235,.05);
+    color:var(--accent);
+    transform:translateY(-1px);
 }
-
-/* Radio Labels */
-.scale label {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #1a2a6c;
-    cursor: pointer;
-    transition: 0.3s;
+.opt-btn.selected {
+    border-color:var(--accent);
+    background:var(--accent);
+    color:white;
+    box-shadow:0 4px 14px rgba(37,99,235,.28);
+    transform:translateY(-2px);
 }
-
-/* Radio Buttons */
-.scale input {
-    margin-top: 6px;
-    accent-color: #1a4dff;
-    cursor: pointer;
-    transform: scale(1.1);
+.opt-btn .dot {
+    width:7px; height:7px; border-radius:50%;
+    background:currentColor; opacity:.55; flex-shrink:0;
+    transition:.15s;
 }
+.opt-btn.selected .dot { opacity:1; }
 
-/* Hover Effect */
-.scale label:hover {
-    color: #1a4dff;
+/* hidden real radio */
+input[type="radio"] { display:none !important; }
+
+/* ── submit button ── */
+.btn-submit-wrap { text-align:center; margin-top:1.8rem; animation:fadeUp .6s .3s ease both; }
+.btn-submit {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:.75rem 2.2rem; border-radius:99px;
+    font-size:.9rem; font-weight:700; cursor:pointer;
+    border:none; font-family:'DM Sans',sans-serif;
+    background:linear-gradient(135deg, var(--accent), #6366f1);
+    color:white;
+    box-shadow:0 8px 24px rgba(37,99,235,.30);
+    transition:.2s;
 }
+.btn-submit:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(37,99,235,.35); }
 
-/* ===== Button Section ===== */
-.btn-container {
-    text-align: center;
-    margin-top: 35px;
+/* ── warn ── */
+@keyframes shake {
+    0%,100%{ transform:translateX(0); }
+    20%    { transform:translateX(-6px); }
+    40%    { transform:translateX(6px); }
+    60%    { transform:translateX(-4px); }
+    80%    { transform:translateX(4px); }
 }
+.shake { animation:shake .4s ease; }
+.question-item.warn .question-text { color:#dc2626; }
+.question-item.warn .options-row { outline:2px solid rgba(220,38,38,.25); border-radius:12px; padding:4px; }
 
-/* Submit Button */
-button {
-    padding: 14px 45px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-button:hover {
-    box-shadow: 0 0 25px rgba(0, 85, 255, 0.6);
-    transform: translateY(-3px);
-}
-
-/* ===== Animation ===== */
+/* ── animations ── */
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from{ opacity:0; transform:translateY(20px); }
+    to  { opacity:1; transform:translateY(0); }
+}
+@keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%    { opacity:.5; transform:scale(1.4); }
 }
 
+@media(max-width:520px){
+    .options-row { flex-direction:column; }
+    .opt-btn { border-radius:12px; }
+}
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<!-- Nav -->
+<nav>
+    <a href="#" class="nav-logo">
+        <div class="nav-icon"><i class="fas fa-compass"></i></div>
+        Career Guider
+    </a>
+    <a href="/dashboard" class="nav-back"><i class="fas fa-arrow-left"></i> Dashboard</a>
+</nav>
 
-    <h1>Interest Assessment – Science (PCM)</h1>
-    <p class="subtitle">
-        Rate your interest level from 1 (Very Low) to 5 (Very High)
-    </p>
+<div class="page">
 
-    <form action="/interest_assessment" method="POST">
+    <!-- Header -->
+    <div class="quiz-header">
+        <div class="quiz-eyebrow"><span class="pulse"></span> Science (PCM) Stream</div>
+        <h1>Interest Assessment</h1>
+        <p>Rate your interest level from 1 (Very Low) to 5 (Very High) for each area.</p>
+    </div>
 
-        <!-- Engineering -->
-        <div class="question">
-            <h3>1. How interested are you in Engineering fields (Mechanical, Civil, Electrical)?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_engineering" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+    <!-- Progress -->
+    <div class="progress-wrap">
+        <div class="progress-meta">
+            <span>Interest Areas</span>
+            <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <form action="/interest_assessment" method="POST" id="interestForm">
+
+        <!-- Hidden real radio inputs -->
+        {% for name in ['interest_engineering','interest_cs','interest_research','interest_defense','interest_business','interest_creative'] %}
+            {% for i in range(1,6) %}
+            <input type="radio" name="{{ name }}" id="{{ name }}_{{ i }}" value="{{ i }}">
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Q1: Engineering -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-info">
+                    <h2>Engineering</h2>
+                    <p>Mechanical, Civil, Electrical & related fields</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_engineering">
+                    <div class="question-num">Question 1</div>
+                    <div class="question-text">How interested are you in Engineering fields (Mechanical, Civil, Electrical)?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_engineering" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_engineering" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_engineering" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_engineering" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_engineering" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Computer Science -->
-        <div class="question">
-            <h3>2. How interested are you in Computer Science / Programming / AI?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_cs" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+        <!-- Q2: Computer Science -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-info">
+                    <h2>Computer Science</h2>
+                    <p>Programming, AI, Software Development</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_cs">
+                    <div class="question-num">Question 2</div>
+                    <div class="question-text">How interested are you in Computer Science / Programming / AI?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_cs" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_cs" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_cs" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_cs" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_cs" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Pure Science -->
-        <div class="question">
-            <h3>3. How interested are you in Research in Physics or Mathematics?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_research" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+        <!-- Q3: Research -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-info">
+                    <h2>Pure Science & Research</h2>
+                    <p>Physics, Mathematics, Scientific Research</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_research">
+                    <div class="question-num">Question 3</div>
+                    <div class="question-text">How interested are you in Research in Physics or Mathematics?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_research" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_research" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_research" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_research" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_research" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Defense -->
-        <div class="question">
-            <h3>4. How interested are you in Defense or Technical Government Services?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_defense" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+        <!-- Q4: Defense -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-info">
+                    <h2>Defense & Government Services</h2>
+                    <p>Technical roles in armed forces & public sector</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_defense">
+                    <div class="question-num">Question 4</div>
+                    <div class="question-text">How interested are you in Defense or Technical Government Services?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_defense" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_defense" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_defense" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_defense" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_defense" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Entrepreneurship -->
-        <div class="question">
-            <h3>5. How interested are you in Starting Your Own Tech Startup?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_business" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+        <!-- Q5: Entrepreneurship -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div class="section-info">
+                    <h2>Entrepreneurship</h2>
+                    <p>Tech startups, innovation & business</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_business">
+                    <div class="question-num">Question 5</div>
+                    <div class="question-text">How interested are you in Starting Your Own Tech Startup?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_business" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_business" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_business" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_business" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_business" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Creative Tech -->
-        <div class="question">
-            <h3>6. How interested are you in Creative Technology (Game Dev, Design, UI/UX)?</h3>
-            <div class="scale">
-                {% for i in range(1,6) %}
-                <label>
-                    {{ i }}
-                    <input type="radio" name="interest_creative" value="{{ i }}" required>
-                </label>
-                {% endfor %}
+        <!-- Q6: Creative Tech -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <div class="section-info">
+                    <h2>Creative Technology</h2>
+                    <p>Game Dev, Design, UI/UX, Digital Media</p>
+                </div>
+            </div>
+            <div class="questions-body">
+                <div class="question-item" data-name="interest_creative">
+                    <div class="question-num">Question 6</div>
+                    <div class="question-text">How interested are you in Creative Technology (Game Dev, Design, UI/UX)?</div>
+                    <div class="options-row">
+                        <button type="button" class="opt-btn" data-name="interest_creative" data-val="1" onclick="pick(this)"><span class="dot"></span>1 – Very Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_creative" data-val="2" onclick="pick(this)"><span class="dot"></span>2 – Low</button>
+                        <button type="button" class="opt-btn" data-name="interest_creative" data-val="3" onclick="pick(this)"><span class="dot"></span>3 – Neutral</button>
+                        <button type="button" class="opt-btn" data-name="interest_creative" data-val="4" onclick="pick(this)"><span class="dot"></span>4 – High</button>
+                        <button type="button" class="opt-btn" data-name="interest_creative" data-val="5" onclick="pick(this)"><span class="dot"></span>5 – Very High</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="btn-container">
-            <button type="submit">Generate Career Profile</button>
+        <div class="btn-submit-wrap">
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Generate Career Profile
+            </button>
         </div>
 
     </form>
-
 </div>
 
+<script>
+const FIELDS = ['interest_engineering','interest_cs','interest_research','interest_defense','interest_business','interest_creative'];
+const TOTAL = FIELDS.length;
+
+function pick(btn) {
+    const name = btn.dataset.name;
+    const val  = btn.dataset.val;
+
+    document.querySelectorAll(`.opt-btn[data-name="${name}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const radio = document.getElementById(`${name}_${val}`);
+    if (radio) radio.checked = true;
+
+    const qItem = btn.closest('.question-item');
+    if (qItem) qItem.classList.remove('warn');
+
+    updateProgress();
+}
+
+function updateProgress() {
+    const answered = FIELDS.filter(n => document.querySelector(`input[name="${n}"]:checked`)).length;
+    const pct = Math.round((answered / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = pct + '%';
+}
+
+document.getElementById('interestForm').addEventListener('submit', function(e) {
+    const unanswered = FIELDS.filter(n => !document.querySelector(`input[name="${n}"]:checked`));
+    if (unanswered.length > 0) {
+        e.preventDefault();
+        unanswered.forEach(name => {
+            const item = document.querySelector(`.question-item[data-name="${name}"]`);
+            if (item) { item.classList.add('warn'); }
+        });
+        const cards = document.querySelectorAll('.section-card');
+        cards.forEach(c => { c.classList.add('shake'); setTimeout(() => c.classList.remove('shake'), 500); });
+        document.querySelector('.question-item.warn')?.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+});
+
+updateProgress();
+</script>
 </body>
 </html>

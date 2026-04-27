@@ -1,202 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Career Roadmap</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Roadmap | Career Guider</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
 
-/* ===== Background ===== */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #ffffff 0%, #f2f7ff 50%, #e6f0ff 100%);
-    padding: 40px;
-}
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-/* ===== Main Card ===== */
-.container {
-    max-width: 1000px;
-    margin: auto;
-    background: #ffffff;
-    padding: 50px;
-    border-radius: 30px;
-    border: 1px solid rgba(0, 90, 255, 0.2);
-    box-shadow:
-        0 25px 70px rgba(0, 60, 255, 0.12),
-        0 0 35px rgba(0, 90, 255, 0.08);
-    animation: fadeUp 0.8s ease-in-out;
-    transition: 0.3s ease;
-}
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%);
+            border-radius: 1.5rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+            animation: slideDown 0.6s ease-out;
+        }
 
-.container:hover {
-    box-shadow:
-        0 30px 80px rgba(0, 60, 255, 0.18),
-        0 0 45px rgba(0, 90, 255, 0.15);
-}
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
 
-/* ===== Main Title ===== */
-.main-title {
-    text-align: center;
-    font-size: 34px;
-    font-weight: 700;
-    margin-bottom: 35px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
+        .header p {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
 
-/* ===== LLM Generated Content ===== */
-.llm-content h2 {
-    margin-top: 35px;
-    padding: 14px 18px;
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    color: white;
-    border-radius: 12px;
-    font-size: 20px;
-}
+        /* Main Card */
+        .roadmap-card {
+            background: white;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: slideUp 0.6s ease-out 0.1s both;
+        }
 
-.llm-content h3 {
-    margin-top: 20px;
-    color: #1a2a6c;
-}
+        /* Content Sections */
+        .content-section {
+            margin-bottom: 2rem;
+        }
 
-.llm-content p {
-    font-size: 15px;
-    line-height: 1.7;
-    color: #334155;
-}
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-/* Lists */
-.llm-content ul {
-    margin-top: 12px;
-    padding-left: 22px;
-}
+        .section-title i {
+            color: #2563eb;
+            font-size: 1.6rem;
+        }
 
-.llm-content li {
-    margin-bottom: 8px;
-    color: #1e293b;
-}
+        /* Typography */
+        .content-section p {
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 1.25rem;
+            font-size: 0.95rem;
+        }
 
-/* Highlight Box */
-.llm-content .highlight-box {
-    background: rgba(0, 90, 255, 0.06);
-    padding: 20px;
-    border-left: 6px solid #1a4dff;
-    border-radius: 12px;
-    margin-top: 15px;
-}
+        .content-section strong {
+            color: #2563eb;
+            font-weight: 700;
+        }
 
-/* Roadmap Cards */
-.llm-content .roadmap-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-top: 25px;
-}
+        /* Lists */
+        .content-section ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
 
-.llm-content .roadmap-card {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 18px;
-    border: 1px solid rgba(0, 90, 255, 0.15);
-    box-shadow: 0 10px 30px rgba(0, 60, 255, 0.08);
-    transition: 0.3s ease;
-}
+        .content-section li {
+            padding: 0.75rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: #1e293b;
+            line-height: 1.6;
+        }
 
-.llm-content .roadmap-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 50px rgba(0, 60, 255, 0.15);
-}
+        .content-section li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
 
-/* Career Cards */
-.llm-content .career-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-    margin-top: 20px;
-}
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #2563eb15 0%, #6366f115 100%);
+            border-left: 4px solid #2563eb;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
 
-.llm-content .career-card {
-    background: rgba(0, 90, 255, 0.05);
-    padding: 18px;
-    border-radius: 14px;
-    font-size: 14px;
-    border: 1px solid rgba(0, 90, 255, 0.15);
-    transition: 0.3s ease;
-}
+        .highlight-box strong {
+            color: #2563eb;
+        }
 
-.llm-content .career-card:hover {
-    background: rgba(0, 90, 255, 0.1);
-    transform: translateY(-4px);
-}
+        /* Grid Cards */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
 
-/* ===== Buttons ===== */
-.button-group {
-    text-align: center;
-    margin-top: 45px;
-}
+        .grid-item {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
 
-.btn {
-    display: inline-block;
-    padding: 14px 40px;
-    margin: 10px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: 700;
-    transition: 0.3s ease;
-}
+        .grid-item:hover {
+            transform: translateY(-6px);
+            border-color: #2563eb;
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.12);
+            background: white;
+        }
 
-.btn-primary {
-    background: linear-gradient(90deg, #0033cc, #1a75ff);
-    color: white;
-}
+        .grid-item-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
 
-.btn-primary:hover {
-    box-shadow: 0 0 25px rgba(0, 85, 255, 0.6);
-    transform: translateY(-3px);
-}
+        .grid-item-desc {
+            font-size: 0.85rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
 
-.btn-secondary {
-    background: #e6ecff;
-    color: #1a4dff;
-    border: 1px solid rgba(0, 90, 255, 0.3);
-}
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.6s ease-out 0.2s both;
+        }
 
-.btn-secondary:hover {
-    background: #d6e2ff;
-    transform: translateY(-3px);
-}
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
 
-/* ===== Animation ===== */
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
 
-</style>
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .header {
+                padding: 2rem 1.5rem;
+            }
+
+            .roadmap-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Markdown content adjustments */
+        .llm-content h2,
+        .llm-content h3,
+        .llm-content h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .llm-content h2 {
+            font-size: 1.4rem;
+            color: #1e293b;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .llm-content h3,
+        .llm-content h4 {
+            font-size: 1.1rem;
+            color: #2563eb;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-road"></i> Your Career Roadmap
+            </h1>
+            <p>Step-by-step guide to achieve your career goals</p>
+        </div>
 
-<div class="container">
+        <!-- Main Content -->
+        <div class="roadmap-card">
+            <div class="llm-content">
+                {{ roadmap | safe }}
+            </div>
+        </div>
 
-    <div class="main-title">
-        Your Personalized Career Roadmap
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <a href="{{ url_for('generate_career_profile') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Profile
+            </a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </div>
     </div>
 
-    <!-- LLM Generated Content -->
-    <div class="llm-content">
-        {{ roadmap | safe }}
-    </div>
+    <script>
+        // Enhance roadmap content with icons and styling
+        document.addEventListener('DOMContentLoaded', function() {
+            const content = document.querySelector('.llm-content');
+            
+            if (content) {
+                // Add icons to headings
+                const h2s = content.querySelectorAll('h2');
+                const icons = ['📚', '🎯', '💻', '🚀', '✨', '🏆'];
+                
+                h2s.forEach((h2, idx) => {
+                    if (!h2.innerHTML.includes('fa-')) {
+                        h2.innerHTML = `<i class="fas fa-check-circle"></i> ${h2.innerHTML}`;
+                    }
+                });
 
-    <div class="button-group">
-        <!-- <a href="/retake_assessment" class="btn btn-secondary">Retake Assessment</a> -->
-        <a href="/main" class="btn btn-primary">Home</a>
-    </div>
-
-</div>
-
+                // Style highlight boxes
+                const ps = content.querySelectorAll('p');
+                ps.forEach(p => {
+                    if (p.innerHTML.includes('Note:') || p.innerHTML.includes('Important:')) {
+                        p.parentNode.insertBefore(
+                            Object.assign(document.createElement('div'), {
+                                className: 'highlight-box',
+                                innerHTML: p.innerHTML,
+                                style: 'margin: 1.5rem 0;'
+                            }),
+                            p
+                        );
+                        p.remove();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
