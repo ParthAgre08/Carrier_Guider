@@ -10,8 +10,7 @@ import markdown
 from groq import Groq
 
 # Groq API client initialization (using Groq cloud API for faster responses)
-groq_client = Groq(api_key="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")  # <-- Replace with your actual Groq API key
-
+groq_client = Groq(api_key="") 
 app = Flask(__name__)# __name__ = It tells the Flask application that this file’s location is the main folder where static, templates, and other files are located.
 
 
@@ -21,8 +20,9 @@ app.secret_key = "super_secret_key"
 connector = pymysql.connect(
 host="localhost",
 user="flaskuser",
-password="12345",
-database="carrier_guider" )
+password=#DataBase Passwod,
+database=#dataBase Name 
+)
 cur = connector.cursor()
 
 
